@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>BJAssist</title>
+</head>
+<body>
+  <header class="pop-head">
+    <div class="brand">
+      <span class="brand-mark">B</span>
+      <span class="brand-name">BJAssist</span>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="enabled" checked />
+      <span>On-page hints</span>
+    </label>
+  </header>
+
+  <div class="license-strip" id="licenseStrip">
+    <span id="licenseStripText">Checking license…</span>
+    <button type="button" id="licenseStripBtn" style="display:none">Unlock $14.99/mo</button>
+  </div>
+
+  <section class="calc">
+    <h2>Your cards</h2>
+    <div class="chips" id="playerChips"></div>
+    <div class="picker" id="playerPicker"></div>
+    <button class="clear" id="clearPlayer" type="button">Clear</button>
+
+    <h2>Dealer upcard</h2>
+    <div class="picker single" id="dealerPicker"></div>
+
+    <div class="result" id="result">
+      <div class="result-action" id="resultAction">—</div>
+      <div class="result-detail" id="resultDetail">Pick at least two of your cards and the dealer's upcard.</div>
+    </div>
+  </section>
+
+  <details class="rules">
+    <summary>Table rules</summary>
+    <label><input type="checkbox" id="hitSoft17" /> Dealer hits soft 17 (H17)</label>
+    <label><input type="checkbox" id="das" checked /> Double after split (DAS)</label>
+    <label><input type="checkbox" id="surrender" /> Late surrender offered</label>
+  </details>
+
+  <footer class="pop-foot">
+    <a href="#" id="openSettings" class="settings-link">⚙ All settings</a>
+    <div>Read-only strategy advice. You make every play. For entertainment/education.</div>
+  </footer>
+
+  <script src="strategy.js"></script>
+  <script src="license.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

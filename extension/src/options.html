@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="options.css" />
+  <title>BJAssist — Settings</title>
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <div class="brand"><span class="brand-mark">B</span> BJAssist</div>
+      <span class="ver">Settings</span>
+    </header>
+
+    <section class="card" id="licenseCard">
+      <h2>License</h2>
+      <p class="card-sub">The on-page auto-read suggestion is free for one hand. After that, unlock it here.</p>
+      <div class="row">
+        <div>
+          <h3 id="licenseStatusTitle">No license yet</h3>
+          <p id="licenseStatusDetail">Play a hand on a supported table to use your free suggestion, or unlock now.</p>
+        </div>
+        <button class="reset" id="buyBtn" type="button">Unlock — $14.99/mo</button>
+      </div>
+      <div class="row" id="licenseKeyRow">
+        <div style="flex:1">
+          <h3>Have a license key?</h3>
+          <p>Paste the key emailed to you after checkout.</p>
+          <input type="text" id="licenseKeyInput" placeholder="BJASSIST-XXXX-XXXX-XXXX" style="width:100%;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid rgba(148,163,184,.35);background:rgba(15,23,42,.5);color:inherit;font:inherit" />
+        </div>
+      </div>
+      <div class="actions">
+        <button class="reset" id="activateBtn" type="button">Activate</button>
+        <button class="reset" id="deactivateBtn" type="button" style="display:none">Remove license from this device</button>
+        <span class="saved" id="licenseMsg"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <div>
+          <h3>On-page suggestions</h3>
+          <p>Show the floating suggestion badge on blackjack tables. Turn off to use only the popup calculator.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="enabled" checked /><span class="slider"></span></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Table rules</h2>
+      <p class="card-sub">Match these to the table you're playing so the advice is exact.</p>
+
+      <div class="row">
+        <div>
+          <h3>Dealer hits soft 17 (H17)</h3>
+          <p>Off = dealer stands on soft 17 (S17), the default for most games.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="hitSoft17" /><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Double after split (DAS)</h3>
+          <p>Allowed at most tables. Affects pair-splitting advice.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="das" checked /><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <div>
+          <h3>Late surrender offered</h3>
+          <p>Only enable if the table actually offers surrender. Off by default.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="surrender" /><span class="slider"></span></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Overlay position</h2>
+      <p class="card-sub">Where the suggestion badge appears on screen.</p>
+      <div class="pos-grid" id="posGrid">
+        <button data-pos="top-left">Top left</button>
+        <button data-pos="top-right" class="active">Top right</button>
+        <button data-pos="bottom-left">Bottom left</button>
+        <button data-pos="bottom-right">Bottom right</button>
+      </div>
+    </section>
+
+    <div class="actions">
+      <span class="saved" id="saved">Saved ✓</span>
+      <button class="reset" id="reset">Reset to defaults</button>
+    </div>
+
+    <footer class="foot">
+      Read-only strategy advice. BJAssist never plays for you. For education and entertainment.
+    </footer>
+  </div>
+
+  <script src="license.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

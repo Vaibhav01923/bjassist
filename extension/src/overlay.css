@@ -1,0 +1,69 @@
+#bjassist-overlay.bjassist-overlay {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  z-index: 2147483647;
+  width: 210px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  --aa-color: #22c55e;
+}
+#bjassist-overlay .aa-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  cursor: move;
+  background: rgba(2, 6, 23, 0.55);
+  user-select: none;
+}
+#bjassist-overlay .aa-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--aa-color);
+  box-shadow: 0 0 8px var(--aa-color);
+}
+#bjassist-overlay .aa-title {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em; flex: 1;
+}
+#bjassist-overlay .aa-close {
+  background: none; border: none; color: #94a3b8;
+  font-size: 16px; line-height: 1; cursor: pointer; padding: 0 2px;
+}
+#bjassist-overlay .aa-close:hover { color: #f8fafc; }
+#bjassist-overlay .aa-action {
+  font-size: 30px; font-weight: 800; text-align: center;
+  padding: 14px 8px 6px; color: var(--aa-color);
+  letter-spacing: 0.03em;
+}
+#bjassist-overlay .aa-detail {
+  font-size: 11px; line-height: 1.4; color: #cbd5e1;
+  padding: 0 12px 12px; text-align: center;
+}
+#bjassist-overlay.bjassist-idle .aa-action { color: #64748b; }
+
+#bjassist-overlay.bjassist-locked { width: 240px; }
+#bjassist-overlay.bjassist-locked .aa-action {
+  font-size: 18px; color: #f59e0b; padding-top: 12px;
+}
+#bjassist-overlay .aa-unlock {
+  margin-top: 8px;
+  display: inline-block;
+  font: inherit;
+  font-weight: 700;
+  font-size: 11px;
+  color: #0b1220;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#bjassist-overlay .aa-unlock:hover { background: #34d968; }
+#bjassist-overlay .aa-unlock:disabled { opacity: 0.6; cursor: default; }

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BJAssist — Perfect Blackjack Strategy, Instantly</title>
+  <meta name="description" content="BJAssist shows the mathematically optimal blackjack play for any hand — hit, stand, double, split, or surrender. A read-only strategy helper and trainer. You make every decision." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- animated ambient background -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="logo" href="#top">
+      <span class="logo-mark">B</span> BJAssist
+    </a>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#demo">Live demo</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#pricing" class="btn btn-sm">Get BJAssist</a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <div class="badge">Read-only strategy assistant · You always decide</div>
+      <h1>Perfect basic strategy,<br /><span class="grad">without the chart.</span></h1>
+      <p class="lead">
+        Stop squinting at a strategy card mid-hand. BJAssist reads the cards on
+        your screen and instantly shows the mathematically optimal play — hit,
+        stand, double, split, or surrender. It only <em>suggests</em>. Every click
+        stays yours.
+      </p>
+      <div class="hero-cta">
+        <a href="#pricing" class="btn">Get the Chrome extension</a>
+        <a href="#demo" class="btn btn-ghost">Try the live demo</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>99.5%</strong><span>Return with perfect basic strategy*</span></div>
+        <div><strong>&lt;1s</strong><span>Suggestion per hand</span></div>
+        <div><strong>0</strong><span>Auto-clicks — advice only</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="mini-overlay">
+        <div class="mo-head"><span class="mo-dot"></span> BJAssist</div>
+        <div class="mo-action" id="heroAction">STAND</div>
+        <div class="mo-detail" id="heroDetail">You: 10 6 · Dealer: 5 · (hard 16)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPORTED TABLES MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Single-deck</span><span>·</span><span>Double-deck</span><span>·</span>
+      <span>4-deck shoe</span><span>·</span><span>6-deck shoe</span><span>·</span>
+      <span>8-deck shoe</span><span>·</span><span>Stands soft 17</span><span>·</span>
+      <span>Hits soft 17</span><span>·</span><span>Double after split</span><span>·</span>
+      <span>Late surrender</span><span>·</span><span>Any blackjack table</span><span>·</span>
+      <span>Single-deck</span><span>·</span><span>Double-deck</span><span>·</span>
+      <span>4-deck shoe</span><span>·</span><span>6-deck shoe</span><span>·</span>
+      <span>8-deck shoe</span><span>·</span><span>Stands soft 17</span><span>·</span>
+      <span>Hits soft 17</span><span>·</span><span>Double after split</span><span>·</span>
+      <span>Late surrender</span><span>·</span><span>Any blackjack table</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <h2 class="section-title">Three steps, zero guessing</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Install the extension</h3>
+        <p>Add BJAssist to Chrome. Nothing to configure — it runs locally in your browser.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Play blackjack as usual</h3>
+        <p>Open your game. BJAssist reads the cards already visible on screen and evaluates the hand.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>See the optimal play</h3>
+        <p>A small badge shows the correct move. You read it, then make your own decision and click yourself.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DEMO -->
+  <section class="section demo" id="demo">
+    <h2 class="section-title">Play a hand. Watch it think.</h2>
+    <p class="section-sub">A real hand, dealt live, using the exact engine that ships in the extension.</p>
+
+    <div class="table-grid">
+
+      <!-- BET / CONTROL PANEL -->
+      <div class="bet-panel">
+        <div class="bet-head">
+          <span>Bet Amount</span>
+          <span>Balance <b id="betAmountLabel">$0.00</b></span>
+        </div>
+        <div class="bet-input-row">
+          <span id="betValueText">$25.00</span>
+          <div class="bet-quick">
+            <button type="button" id="betHalf">½</button>
+            <span class="bet-sep"></span>
+            <button type="button" id="betDbl">2×</button>
+          </div>
+        </div>
+
+        <div class="ctrl-grid">
+          <button type="button" class="ctrl-btn" id="btnHit">Hit <span class="ctrl-ic">↓</span></button>
+          <button type="button" class="ctrl-btn" id="btnStand">Stand <span class="ctrl-ic">✋</span></button>
+          <button type="button" class="ctrl-btn" id="btnSplit" disabled>Split <span class="ctrl-ic">✂</span></button>
+          <button type="button" class="ctrl-btn" id="btnDouble">Double <span class="ctrl-ic">×2</span></button>
+        </div>
+
+        <button type="button" class="deal-btn" id="btnDeal">Deal</button>
+
+        <p class="bet-note">Demo chips only — no real money. This is the exact engine that ships in BJAssist.</p>
+      </div>
+
+      <!-- TABLE, mocked up inside a browser tab -->
+      <div class="chrome-mock">
+        <div class="chrome-tabs">
+          <div class="chrome-tab">
+            <span class="chrome-favicon"></span>
+            <span class="chrome-tab-title">Blackjack Table</span>
+            <span class="chrome-tab-close">×</span>
+          </div>
+        </div>
+        <div class="chrome-toolbar">
+          <div class="chrome-dots"><span></span><span></span><span></span></div>
+          <div class="chrome-address"><span class="chrome-lock">🔒</span>casino.example/play/blackjack</div>
+          <div class="chrome-more">⋮</div>
+        </div>
+
+        <div class="table-felt">
+          <div class="shoe" aria-hidden="true"><span></span></div>
+
+          <div class="ext-overlay" id="suggestionBadge">
+            <div class="ext-head"><span class="ext-dot"></span><span class="ext-title">BJAssist</span></div>
+            <div class="ext-action" id="sbAction">—</div>
+            <div class="ext-detail" id="sbText">Waiting for a hand…</div>
+          </div>
+
+          <div class="hand-block">
+            <div class="hand-label"><span>DEALER</span><span class="hand-total" id="dealerTotal"></span></div>
+            <div class="card-row" id="dealerCards"></div>
+          </div>
+
+          <div class="ribbon">
+            <div class="ribbon-tail"></div>
+            <div class="ribbon-body">
+              <div class="ribbon-main">BLACKJACK PAYS 3 TO 2</div>
+              <div class="ribbon-sub">INSURANCE PAYS 2 TO 1</div>
+            </div>
+            <div class="ribbon-tail right"></div>
+          </div>
+
+          <div class="table-status" id="tableStatus"></div>
+
+          <div class="hand-block">
+            <div class="card-row" id="playerCards"></div>
+            <div class="hand-label"><span>YOU</span><span class="hand-total" id="playerTotal"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRATEGY CHART -->
+  <section class="section grid-section" id="strategy">
+    <h2 class="section-title reveal">The whole chart, at a glance</h2>
+    <p class="section-sub reveal">The exact basic-strategy table the engine follows on every hand.</p>
+    <div class="chart-img-wrap reveal">
+      <img src="bjchart.png" alt="Blackjack perfect strategy chart — hard totals, soft totals, and pairs" width="1192" height="1591" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <h2 class="section-title">Built to be fast, honest, and yours</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="f-ic">🎯</div>
+        <h3>Mathematically optimal</h3>
+        <p>Full basic-strategy engine covering hard totals, soft totals, pairs, doubling, and late surrender.</p>
+      </div>
+      <div class="feature">
+        <div class="f-ic">⚙️</div>
+        <h3>Rule-aware</h3>
+        <p>Toggle H17/S17, double-after-split, and surrender so the advice matches the exact table you're on.</p>
+      </div>
+      <div class="feature">
+        <div class="f-ic">🖐️</div>
+        <h3>Advice only</h3>
+        <p>BJAssist never touches the controls. It reads what's on screen and suggests — you play every hand.</p>
+      </div>
+      <div class="feature">
+        <div class="f-ic">🔒</div>
+        <h3>Runs locally</h3>
+        <p>Everything happens in your browser. No accounts, no card data leaving your machine, no tracking.</p>
+      </div>
+      <div class="feature">
+        <div class="f-ic">🧮</div>
+        <h3>Manual calculator</h3>
+        <p>A built-in popup lets you punch in any hand to check the right play — a trainer that works anywhere.</p>
+      </div>
+      <div class="feature">
+        <div class="f-ic">📚</div>
+        <h3>Learn as you go</h3>
+        <p>Every suggestion explains the reasoning, so you gradually memorize the chart instead of depending on it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS  (PLACEHOLDER: replace with real, verifiable reviews before launch) -->
+  <section class="section" id="reviews">
+    <h2 class="section-title reveal">What early users say</h2>
+    <p class="section-sub reveal">Placeholder reviews — swap in real ones before you launch.</p>
+    <div class="reviews reveal">
+      <figure class="review">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I stopped keeping a strategy card next to my laptop. The move just shows up and I've quit making dumb mistakes on 12s and 16s."</blockquote>
+        <figcaption><span class="avatar">DR</span> Devin R. · Weekend player</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="stars">★★★★★</div>
+        <blockquote>"The manual calculator alone is worth it for drilling. I finally have soft hands memorized because it explains every call."</blockquote>
+        <figcaption><span class="avatar">MP</span> Mara P. · Learning basic strategy</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Fast, no account, nothing phones home. It reads what's on my screen and I still click everything myself. Exactly what I wanted."</blockquote>
+        <figcaption><span class="avatar">TS</span> Theo S. · Privacy-minded</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section pricing" id="pricing">
+    <h2 class="section-title">Simple pricing</h2>
+    <p class="section-sub">Your first hand is free. Cancel anytime after that.</p>
+    <div class="plans plans-2">
+      <div class="plan">
+        <h3>Trainer</h3>
+        <div class="price">$0<span>/forever</span></div>
+        <p class="plan-sub">The manual calculator, for practice.</p>
+        <ul>
+          <li>Manual hand calculator</li>
+          <li>Full basic-strategy engine</li>
+          <li>Rule toggles</li>
+          <li class="muted">No on-page suggestions</li>
+        </ul>
+        <a href="#how" class="btn btn-ghost btn-block">Install free</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-tag">First hand free</div>
+        <h3>BJAssist</h3>
+        <div class="price">$14.99<span>/mo</span></div>
+        <p class="plan-sub">Live on-page suggestions while you play.</p>
+        <ul>
+          <li>Everything in Trainer</li>
+          <li>Live on-page suggestion badge</li>
+          <li>Auto hand detection</li>
+          <li>1 free hand, then $14.99/mo</li>
+        </ul>
+        <button type="button" class="btn btn-block" id="buyBtn">Get BJAssist</button>
+        <p class="plan-note" id="buyNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <h2 class="section-title">Straight answers</h2>
+    <div class="faq">
+      <details>
+        <summary>Does this guarantee I'll win money?</summary>
+        <p>No — and be wary of anything that claims it does. Perfect basic strategy trims the house edge to about 0.5%, meaning the casino still holds a small mathematical edge over the long run. BJAssist makes sure you never make a <em>worse</em>-than-optimal play. It does not, and cannot, flip the odds in your favor.</p>
+      </details>
+      <details>
+        <summary>Does it play for me?</summary>
+        <p>No. BJAssist is read-only. It shows the recommended move; you decide and click. It never automates play.</p>
+      </details>
+      <details>
+        <summary>Is using a strategy helper allowed?</summary>
+        <p>Basic-strategy advice is legal, but many casinos' Terms of Service restrict third-party software and on-screen assistants. Whether you use the on-page suggestion feature on a given site is your responsibility — check that site's terms. The free Trainer/manual calculator sidesteps this entirely since it never reads any casino page.</p>
+      </details>
+      <details>
+        <summary>Does card counting work here?</summary>
+        <p>Not for online RNG blackjack. Those games reshuffle every hand, so there's no count to track. BJAssist is a basic-strategy tool, not a counting tool.</p>
+      </details>
+      <details>
+        <summary>Where does my data go?</summary>
+        <p>Nowhere. The engine runs entirely in your browser. No card data, credentials, or play history is sent to us.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Play every hand the way the math says.</h2>
+    <a href="#pricing" class="btn btn-lg">Get BJAssist for Chrome</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="foot-grid">
+      <div>
+        <div class="logo"><span class="logo-mark">B</span> BJAssist</div>
+        <p class="foot-note">A read-only blackjack basic-strategy assistant and trainer.</p>
+      </div>
+      <div>
+        <h5>Product</h5>
+        <a href="#how">How it works</a>
+        <a href="#demo">Live demo</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#faq">Responsible play</a>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <strong>*</strong> The 99.5% figure is the theoretical return of perfect basic strategy on a common
+      multi-deck game; the house retains roughly a 0.5% edge. BJAssist provides strategy information for
+      education and entertainment. It does not guarantee winnings, does not play for you, and is not
+      affiliated with any casino. Gamble responsibly. 21+ where applicable. If gambling stops being fun,
+      call 1-800-522-4700 (US).
+    </div>
+    <div class="copyright">© 2026 BJAssist. For entertainment purposes only.</div>
+  </footer>
+
+  <script src="strategy.js"></script>
+  <script src="demo-game.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

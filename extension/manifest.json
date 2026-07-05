@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "BJAssist — Blackjack Strategy Helper",
+  "version": "0.1.0",
+  "description": "Suggests the mathematically optimal blackjack play (hit/stand/double/split/surrender). Read-only: it advises, you decide.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "BJAssist",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://live.dodopayments.com/*",
+    "https://xlstduhdanyfqnbiziym.supabase.co/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "src/options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/strategy.js", "src/site-configs.js", "src/license.js", "src/content.js"],
+      "css": ["src/overlay.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}
