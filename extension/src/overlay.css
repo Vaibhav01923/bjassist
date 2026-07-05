@@ -67,3 +67,24 @@
 }
 #bjassist-overlay .aa-unlock:hover { background: #34d968; }
 #bjassist-overlay .aa-unlock:disabled { opacity: 0.6; cursor: default; }
+
+/* Split into multiple hands — one clearly labeled row per hand instead of a
+   single big action word, so advice is never ambiguous about which hand it's for. */
+#bjassist-overlay.bjassist-multi { width: 250px; }
+#bjassist-overlay .aa-multi { padding: 10px 10px 4px; display: flex; flex-direction: column; gap: 6px; }
+#bjassist-overlay .aa-multi-row {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 9px; padding: 7px 10px;
+}
+#bjassist-overlay .aa-multi-row.aa-multi-active {
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.08);
+}
+#bjassist-overlay .aa-multi-label {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; color: #94a3b8; flex: none;
+}
+#bjassist-overlay .aa-multi-cards { font-size: 11px; color: #cbd5e1; flex: 1; }
+#bjassist-overlay .aa-multi-action { font-size: 12px; font-weight: 800; flex: none; }
+#bjassist-overlay.bjassist-multi .aa-detail { padding-top: 4px; }

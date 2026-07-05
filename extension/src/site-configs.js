@@ -41,6 +41,10 @@
   }
 
   // Generic best-effort parser driven by CSS selectors.
+  // NOTE: this selector-based path has no concept of split hands — it reads
+  // every matching player card as one hand. If a site splits and this parser
+  // is the one active on it, calibrate a real per-hand config (see stakeParser)
+  // instead of trusting this for split tables.
   function selectorParser(cfg) {
     return function () {
       var root = cfg.tableSelector ? document.querySelector(cfg.tableSelector) : document;
@@ -51,7 +55,7 @@
       var dealerRanks = collectRanks(dealerEls);
       if (!playerCards.length || !dealerRanks.length) return null;
       // Dealer upcard = first visible dealer card.
-      return { playerCards: playerCards, dealerUpcard: dealerRanks[0] };
+      return { dealerUpcard: dealerRanks[0], hands: [{ cards: playerCards, active: true }] };
     };
   }
 
@@ -84,18 +88,48 @@
     return out;
   }
 
+  // "Is this the hand currently awaiting a decision" check for a split table.
+  // Confirmed against a live Stake split: the active hand-wrap doesn't carry
+  // the marker itself — each of its cards gets `.face.active` (vs `.face.none`
+  // on the other hand), and its total pill gets `.value.active` (vs `.value.none`).
+  function isActiveHandEl(el) {
+    if (el.querySelector('.face.active') || el.querySelector('.value.active')) return true;
+    // Generic fallbacks for other sites that mark it on the wrap itself.
+    if (el.getAttribute('aria-current') === 'true' || el.getAttribute('aria-selected') === 'true') return true;
+    if (el.getAttribute('data-active') === 'true' || el.getAttribute('data-current') === 'true') return true;
+    return /(^|\s)(active|is-active|current|is-current|focused|is-focused|selected|is-selected)(\s|$)/i.test(el.className || '');
+  }
+
   function stakeParser() {
     var dealer = document.querySelector('[data-testid="dealer"]');
     var player = document.querySelector('[data-testid="player"]');
     if (!dealer || !player) return null;
 
     var dealerCards = readStakeCards(dealer);
-    // Active hand = first .hand-wrap (covers the common, non-split case).
-    var handWrap = player.querySelector('.hand-wrap') || player;
-    var playerCards = readStakeCards(handWrap);
+    if (dealerCards.length < 1) return null;
 
-    if (dealerCards.length < 1 || playerCards.length < 2) return null;
-    return { playerCards: playerCards, dealerUpcard: dealerCards[0] };
+    // A split shows multiple .hand-wrap blocks side by side. Read every one
+    // instead of only the first, so Hand 2 (and 3/4, after re-splits) isn't
+    // silently ignored or merged into Hand 1's cards.
+    var handWraps = player.querySelectorAll('.hand-wrap');
+    var handEls = handWraps.length ? handWraps : [player];
+
+    var hands = [];
+    for (var i = 0; i < handEls.length; i++) {
+      var cards = readStakeCards(handEls[i]);
+      if (cards.length < 2) continue; // this hand slot hasn't been dealt into yet
+      hands.push({ cards: cards, active: isActiveHandEl(handEls[i]) });
+    }
+    if (!hands.length) return null;
+
+    // If we found more than one hand but couldn't tell which is active,
+    // don't guess which one to recommend for — show all of them, clearly
+    // labeled, rather than risk advising on the wrong hand.
+    if (hands.length > 1 && !hands.some(function (h) { return h.active; })) {
+      hands.forEach(function (h) { h.active = null; });
+    }
+
+    return { dealerUpcard: dealerCards[0], hands: hands };
   }
 
   var configs = [
@@ -143,7 +177,9 @@
     var playerCards = collectRanks(groups.player);
     var dealerRanks = collectRanks(groups.dealer);
     if (!playerCards.length || !dealerRanks.length) return null;
-    return { playerCards: playerCards, dealerUpcard: dealerRanks[0] };
+    // No concept of split hands here — every "player"-tagged card counts as
+    // one hand. This is the least-calibrated path; see the note above.
+    return { dealerUpcard: dealerRanks[0], hands: [{ cards: playerCards, active: true }] };
   }
 
   function forHost(host) {

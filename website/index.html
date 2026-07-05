@@ -104,34 +104,7 @@
 
     <div class="table-grid">
 
-      <!-- BET / CONTROL PANEL -->
-      <div class="bet-panel">
-        <div class="bet-head">
-          <span>Bet Amount</span>
-          <span>Balance <b id="betAmountLabel">$0.00</b></span>
-        </div>
-        <div class="bet-input-row">
-          <span id="betValueText">$25.00</span>
-          <div class="bet-quick">
-            <button type="button" id="betHalf">½</button>
-            <span class="bet-sep"></span>
-            <button type="button" id="betDbl">2×</button>
-          </div>
-        </div>
-
-        <div class="ctrl-grid">
-          <button type="button" class="ctrl-btn" id="btnHit">Hit <span class="ctrl-ic">↓</span></button>
-          <button type="button" class="ctrl-btn" id="btnStand">Stand <span class="ctrl-ic">✋</span></button>
-          <button type="button" class="ctrl-btn" id="btnSplit" disabled>Split <span class="ctrl-ic">✂</span></button>
-          <button type="button" class="ctrl-btn" id="btnDouble">Double <span class="ctrl-ic">×2</span></button>
-        </div>
-
-        <button type="button" class="deal-btn" id="btnDeal">Deal</button>
-
-        <p class="bet-note">Demo chips only — no real money. This is the exact engine that ships in BJAssist.</p>
-      </div>
-
-      <!-- TABLE, mocked up inside a browser tab -->
+      <!-- The whole game — controls and table — lives inside one mocked browser tab. -->
       <div class="chrome-mock">
         <div class="chrome-tabs">
           <div class="chrome-tab">
@@ -146,34 +119,65 @@
           <div class="chrome-more">⋮</div>
         </div>
 
-        <div class="table-felt">
-          <div class="shoe" aria-hidden="true"><span></span></div>
+        <div class="game-layout">
 
-          <div class="ext-overlay" id="suggestionBadge">
-            <div class="ext-head"><span class="ext-dot"></span><span class="ext-title">BJAssist</span></div>
-            <div class="ext-action" id="sbAction">—</div>
-            <div class="ext-detail" id="sbText">Waiting for a hand…</div>
-          </div>
-
-          <div class="hand-block">
-            <div class="hand-label"><span>DEALER</span><span class="hand-total" id="dealerTotal"></span></div>
-            <div class="card-row" id="dealerCards"></div>
-          </div>
-
-          <div class="ribbon">
-            <div class="ribbon-tail"></div>
-            <div class="ribbon-body">
-              <div class="ribbon-main">BLACKJACK PAYS 3 TO 2</div>
-              <div class="ribbon-sub">INSURANCE PAYS 2 TO 1</div>
+          <!-- BET / CONTROL PANEL -->
+          <div class="bet-panel">
+            <div class="bet-head">
+              <span>Bet Amount</span>
+              <span>Balance <b id="betAmountLabel">$0.00</b></span>
             </div>
-            <div class="ribbon-tail right"></div>
+            <div class="bet-input-row">
+              <span id="betValueText">$25.00</span>
+              <div class="bet-quick">
+                <button type="button" id="betHalf">½</button>
+                <span class="bet-sep"></span>
+                <button type="button" id="betDbl">2×</button>
+              </div>
+            </div>
+
+            <div class="ctrl-grid">
+              <button type="button" class="ctrl-btn" id="btnHit">Hit <span class="ctrl-ic">↓</span></button>
+              <button type="button" class="ctrl-btn" id="btnStand">Stand <span class="ctrl-ic">✋</span></button>
+              <button type="button" class="ctrl-btn" id="btnSplit" disabled>Split <span class="ctrl-ic">✂</span></button>
+              <button type="button" class="ctrl-btn" id="btnDouble">Double <span class="ctrl-ic">×2</span></button>
+            </div>
+
+            <button type="button" class="deal-btn" id="btnDeal">Deal</button>
+
+            <p class="bet-note">Demo chips only — no real money. This is the exact engine that ships in BJAssist.</p>
           </div>
 
-          <div class="table-status" id="tableStatus"></div>
+          <!-- TABLE -->
+          <div class="table-felt">
+            <div class="shoe" aria-hidden="true"><span></span></div>
 
-          <div class="hand-block">
-            <div class="card-row" id="playerCards"></div>
-            <div class="hand-label"><span>YOU</span><span class="hand-total" id="playerTotal"></span></div>
+            <div class="ext-overlay" id="suggestionBadge">
+              <div class="ext-head"><span class="ext-dot"></span><span class="ext-title">BJAssist</span></div>
+              <div class="ext-action" id="sbAction">—</div>
+              <div class="ext-detail" id="sbText">Waiting for a hand…</div>
+            </div>
+
+            <div class="hand-block">
+              <div class="hand-label"><span>DEALER</span><span class="hand-total" id="dealerTotal"></span></div>
+              <div class="card-row" id="dealerCards"></div>
+            </div>
+
+            <div class="ribbon">
+              <div class="ribbon-tail"></div>
+              <div class="ribbon-body">
+                <div class="ribbon-main">BLACKJACK PAYS 3 TO 2</div>
+                <div class="ribbon-sub">INSURANCE PAYS 2 TO 1</div>
+              </div>
+              <div class="ribbon-tail right"></div>
+            </div>
+
+            <div class="table-status" id="tableStatus"></div>
+
+            <div class="hand-block">
+              <div class="card-row" id="playerCards"></div>
+              <div class="hand-label"><span>YOU</span><span class="hand-total" id="playerTotal"></span></div>
+            </div>
           </div>
         </div>
       </div>

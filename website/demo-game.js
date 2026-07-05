@@ -19,6 +19,7 @@
     betValueText: document.getElementById('betValueText'),
     betHalf: document.getElementById('betHalf'),
     betDbl: document.getElementById('betDbl'),
+    ctrlGrid: document.querySelector('.ctrl-grid'),
     btnHit: document.getElementById('btnHit'),
     btnStand: document.getElementById('btnStand'),
     btnDouble: document.getElementById('btnDouble'),
@@ -115,6 +116,7 @@
 
   function setControlsEnabled(enabled) {
     var canDouble = enabled && state.pc.length === 2 && state.balance >= state.bet * 2;
+    els.ctrlGrid.style.display = enabled ? '' : 'none'; // Hit/Stand/Split/Double only exist once a hand is on the table
     els.btnHit.disabled = !enabled;
     els.btnStand.disabled = !enabled;
     els.btnDouble.disabled = !canDouble;

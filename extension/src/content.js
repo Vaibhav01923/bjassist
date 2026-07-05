@@ -17,7 +17,8 @@
     rules: {},          // rule overrides for BJStrategy
     position: 'top-right',
     lastSignature: '',
-    overlay: null
+    overlay: null,
+    roundEntitled: null // cached entitlement decision for the CURRENT round (see evaluateEntitlement)
   };
 
   // Load settings from extension storage (falls back to defaults).
@@ -55,7 +56,28 @@
 
   function signature(parsed) {
     if (!parsed) return 'none';
-    return parsed.playerCards.join(',') + '|' + parsed.dealerUpcard;
+    return parsed.hands.map(function (h) { return h.cards.join(','); }).join('|') + '#' + parsed.dealerUpcard;
+  }
+
+  // A round "starts" at a fresh two-card hand with no split yet. We cache the
+  // entitlement decision for the whole round the first time we see this, so
+  // a later hit (more cards) or a split (more hands) doesn't re-trigger the
+  // paywall mid-hand — only the NEXT round re-evaluates.
+  function isRoundStart(parsed) {
+    return parsed.hands.length === 1 && parsed.hands[0].cards.length === 2;
+  }
+
+  function evaluateEntitlement(parsed, cb) {
+    if (!window.BJLicense) { cb(true); return; }
+    if (!isRoundStart(parsed) && typeof state.roundEntitled === 'boolean') {
+      cb(state.roundEntitled);
+      return;
+    }
+    window.BJLicense.checkEntitlement(function (ent) {
+      state.roundEntitled = ent.entitled;
+      if (ent.entitled && ent.reason === 'free_hand') window.BJLicense.markFreeHandUsed();
+      cb(ent.entitled);
+    });
   }
 
   function ensureOverlay() {
@@ -68,8 +90,10 @@
     el.innerHTML =
       '<div class="aa-head"><span class="aa-dot"></span><span class="aa-title">BJAssist</span>' +
       '<button class="aa-close" title="Hide">×</button></div>' +
+      '<div class="aa-body">' +
       '<div class="aa-action">—</div>' +
-      '<div class="aa-detail">Waiting for a hand…</div>';
+      '<div class="aa-detail">Waiting for a hand…</div>' +
+      '</div>';
     document.documentElement.appendChild(el);
     el.querySelector('.aa-close').addEventListener('click', function () {
       el.style.display = 'none';
@@ -98,44 +122,82 @@
     // it out of ad/chat iframes and off the page between hands.
     if (!parsed) {
       if (state.overlay) state.overlay.style.display = 'none';
+      state.roundEntitled = null; // table's idle — next hand is a fresh round
       return;
     }
     var el = ensureOverlay();
     el.style.display = '';
-    var rec = window.BJStrategy.getBestPlay(parsed.playerCards, parsed.dealerUpcard, state.rules);
-    if (rec.error) {
+
+    var recs = parsed.hands.map(function (h) {
+      return window.BJStrategy.getBestPlay(h.cards, parsed.dealerUpcard, state.rules);
+    });
+
+    // If every hand is incomplete (e.g. only one card in, mid-deal), stay idle —
+    // this doesn't reveal a decision, so it's not gated and doesn't touch the
+    // free-hand allowance.
+    if (recs.every(function (r) { return r.error; })) {
       el.className = 'bjassist-overlay bjassist-idle';
-      el.querySelector('.aa-action').textContent = '—';
-      el.querySelector('.aa-detail').textContent = rec.error;
+      setBody(el, '<div class="aa-action">—</div><div class="aa-detail">' + recs[0].error + '</div>');
       return;
     }
-    // A real, actionable suggestion is the paid moment — gate it. Idle/no-hand
-    // states above are always free since they don't reveal a decision.
-    if (!window.BJLicense) { showSuggestion(el, rec, parsed); return; }
-    window.BJLicense.checkEntitlement(function (ent) {
-      if (ent.entitled) {
-        if (ent.reason === 'free_hand') window.BJLicense.markFreeHandUsed();
-        showSuggestion(el, rec, parsed);
-      } else {
-        showPaywall(el);
-      }
+
+    evaluateEntitlement(parsed, function (entitled) {
+      if (!entitled) { showPaywall(el); return; }
+      if (parsed.hands.length === 1) showSingleHand(el, recs[0], parsed.hands[0], parsed.dealerUpcard);
+      else showMultiHand(el, recs, parsed.hands, parsed.dealerUpcard);
     });
   }
 
-  function showSuggestion(el, rec, parsed) {
+  function setBody(el, html) {
+    el.querySelector('.aa-body').innerHTML = html;
+  }
+
+  function showSingleHand(el, rec, hand, dealerUpcard) {
     el.className = 'bjassist-overlay';
     el.style.setProperty('--aa-color', rec.color);
-    el.querySelector('.aa-action').textContent = rec.label.toUpperCase();
-    el.querySelector('.aa-detail').textContent =
-      'You: ' + parsed.playerCards.join(' ') + '  ·  Dealer: ' + parsed.dealerUpcard +
-      (rec.hand ? '  ·  (' + (rec.hand.soft ? 'soft ' : '') + rec.hand.total + ')' : '');
+    if (rec.error) {
+      setBody(el, '<div class="aa-action">—</div><div class="aa-detail">' + rec.error + '</div>');
+      return;
+    }
+    setBody(el,
+      '<div class="aa-action">' + rec.label.toUpperCase() + '</div>' +
+      '<div class="aa-detail">You: ' + hand.cards.join(' ') + '  ·  Dealer: ' + dealerUpcard +
+      (rec.hand ? '  ·  (' + (rec.hand.soft ? 'soft ' : '') + rec.hand.total + ')' : '') + '</div>'
+    );
+  }
+
+  // Split into 2+ hands: never collapse these into one suggestion — show
+  // each hand's own recommendation, clearly labeled, so it's never ambiguous
+  // which advice belongs to which hand.
+  function showMultiHand(el, recs, hands, dealerUpcard) {
+    el.className = 'bjassist-overlay bjassist-multi';
+    el.style.setProperty('--aa-color', recs[0].color || '#e6edf6');
+    var knowActive = hands.some(function (h) { return h.active === true; });
+    var rows = hands.map(function (h, i) {
+      var rec = recs[i];
+      var label = rec.error ? '—' : rec.label.toUpperCase();
+      var color = rec.error ? '#64748b' : rec.color;
+      var activeCls = knowActive && h.active ? ' aa-multi-active' : '';
+      return (
+        '<div class="aa-multi-row' + activeCls + '">' +
+          '<span class="aa-multi-label">HAND ' + (i + 1) + '</span>' +
+          '<span class="aa-multi-cards">' + h.cards.join(' ') + '</span>' +
+          '<span class="aa-multi-action" style="color:' + color + '">' + label + '</span>' +
+        '</div>'
+      );
+    }).join('');
+    setBody(el,
+      '<div class="aa-multi">' + rows + '</div>' +
+      '<div class="aa-detail">Dealer: ' + dealerUpcard + (knowActive ? '' : '  ·  active hand not detected — check yours') + '</div>'
+    );
   }
 
   function showPaywall(el) {
     el.className = 'bjassist-overlay bjassist-locked';
-    el.querySelector('.aa-action').textContent = '🔒 LOCKED';
-    el.querySelector('.aa-detail').innerHTML =
-      'Your free hand is used. <button type="button" class="aa-unlock">Unlock BJAssist — $14.99/mo</button>';
+    setBody(el,
+      '<div class="aa-action">🔒 LOCKED</div>' +
+      '<div class="aa-detail">Your free hand is used. <button type="button" class="aa-unlock">Unlock BJAssist — $14.99/mo</button></div>'
+    );
     var btn = el.querySelector('.aa-unlock');
     if (!btn) return;
     btn.addEventListener('click', function () {

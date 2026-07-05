@@ -101,9 +101,12 @@ em { font-style: normal; color: var(--green-2); }
 .step p { color: var(--muted); font-size: 15px; }
 
 /* DEMO — playable table */
-.table-grid { display: grid; grid-template-columns: 280px 1fr; gap: 22px; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; align-items: stretch; }
+.table-grid { margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; }
 
-.bet-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; text-align: left; box-shadow: 0 16px 40px rgba(0,0,0,0.28); }
+/* Controls + table sit side by side as ONE page inside the chrome-mock below. */
+.game-layout { display: grid; grid-template-columns: 280px 1fr; align-items: stretch; }
+
+.bet-panel { background: var(--panel); border-right: 1px solid var(--line); padding: 22px; display: flex; flex-direction: column; text-align: left; }
 .bet-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); }
 .bet-input-row { display: flex; align-items: center; justify-content: space-between; height: 46px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; margin-top: 8px; font-weight: 700; }
 .bet-quick { display: flex; align-items: center; gap: 8px; }
@@ -213,7 +216,8 @@ em { font-style: normal; color: var(--green-2); }
 @keyframes sbPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 @media (max-width: 860px) {
-  .table-grid { grid-template-columns: 1fr; }
+  .game-layout { grid-template-columns: 1fr; }
+  .bet-panel { border-right: none; border-bottom: 1px solid var(--line); }
 }
 
 /* FEATURES */
