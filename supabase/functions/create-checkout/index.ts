@@ -44,6 +44,10 @@ Deno.serve(async (req: Request) => {
     product_cart: [{ product_id: PRODUCT_ID, quantity: 1 }],
     return_url: returnUrl,
     metadata: { source },
+    // Dodo's own docs recommend always including credit/debit as a fallback —
+    // without this, checkout can default to UPI-only for Indian customers,
+    // which requires manually approving in a UPI app within a short window.
+    allowed_payment_method_types: ["credit", "debit", "upi_collect", "upi_intent"],
   };
   if (email) payload.customer = { email };
 
