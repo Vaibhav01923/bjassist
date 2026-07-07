@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/thank-you", "destination": "/thank-you.html" },
+    { "source": "/activate", "destination": "/activate.html" },
     { "source": "/api/webhooks/dodo", "destination": "https://xlstduhdanyfqnbiziym.supabase.co/functions/v1/dodo-webhook" }
   ]
 }

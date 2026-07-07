@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activate your license — BJAssist</title>
+  <meta name="description" content="Activate your BJAssist license key directly, no copy-pasting into the extension required." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <header class="nav">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">B</span> BJAssist
+    </a>
+  </header>
+
+  <section class="section" style="max-width:520px;margin:0 auto;text-align:center;padding-top:64px">
+    <div class="badge">License activation</div>
+    <h1 style="font-size:36px;letter-spacing:-0.02em;margin-top:20px">Activate your key.</h1>
+    <p class="lead" style="margin:16px auto 0;font-size:16px">
+      This unlocks BJAssist directly in your browser — no need to open the extension yourself.
+    </p>
+
+    <div class="demo-panel" style="text-align:left;margin-top:32px">
+
+      <!-- Checking state -->
+      <div id="stateChecking">
+        <p style="color:var(--muted);text-align:center;margin:0">Looking for the BJAssist extension…</p>
+      </div>
+
+      <!-- Extension not found -->
+      <div id="stateMissing" style="display:none;text-align:center">
+        <p style="color:var(--text);font-weight:600;margin:0">BJAssist isn't installed in this browser.</p>
+        <p style="color:var(--muted);font-size:14px;margin-top:8px">
+          Install the extension first, then reload this page to activate.
+        </p>
+        <a href="index.html#pricing" class="btn btn-block" style="margin-top:16px">Get BJAssist</a>
+      </div>
+
+      <!-- Activation form -->
+      <div id="stateForm" style="display:none">
+        <label for="keyInput" style="display:block;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim)">License key</label>
+        <input type="text" id="keyInput" placeholder="Paste your license key" autocomplete="off" spellcheck="false"
+          style="width:100%;margin-top:8px;padding:12px 14px;border-radius:10px;border:1px solid rgba(148,163,184,.35);background:var(--bg);color:var(--text);font:inherit;font-size:15px" />
+        <button type="button" id="activateBtn" class="btn btn-block" style="margin-top:14px">Activate</button>
+        <p id="formMsg" style="margin-top:12px;font-size:14px;text-align:center;min-height:20px"></p>
+      </div>
+
+      <!-- Success -->
+      <div id="stateSuccess" style="display:none;text-align:center">
+        <p style="color:var(--green-2);font-weight:700;font-size:18px;margin:0">✓ Activated</p>
+        <p style="color:var(--muted);font-size:14px;margin-top:8px">
+          BJAssist is unlocked in this browser. You can close this tab and go play.
+        </p>
+      </div>
+    </div>
+
+    <p class="foot-note" style="margin-top:24px;max-width:none">
+      Key came from your Dodo Payments confirmation email. No account needed —
+      the key itself is what unlocks it.
+    </p>
+  </section>
+
+  <footer class="footer" style="margin-top:60px">
+    <div class="copyright">© 2026 BJAssist. For entertainment purposes only.</div>
+  </footer>
+
+  <script>
+    (function () {
+      var checking = document.getElementById('stateChecking');
+      var missing = document.getElementById('stateMissing');
+      var form = document.getElementById('stateForm');
+      var success = document.getElementById('stateSuccess');
+      var input = document.getElementById('keyInput');
+      var btn = document.getElementById('activateBtn');
+      var msg = document.getElementById('formMsg');
+
+      var params = new URLSearchParams(window.location.search);
+      var prefill = params.get('key') || params.get('license_key');
+      if (prefill) input.value = prefill;
+
+      var extensionReady = false;
+
+      function show(el) {
+        [checking, missing, form, success].forEach(function (s) { s.style.display = 'none'; });
+        el.style.display = '';
+      }
+
+      window.addEventListener('message', function (event) {
+        if (event.source !== window || event.origin !== window.location.origin) return;
+        var data = event.data;
+        if (!data) return;
+
+        if (data.type === 'BJASSIST_EXTENSION_READY') {
+          extensionReady = true;
+          show(form);
+          if (prefill) activate();
+        }
+
+        if (data.type === 'BJASSIST_ACTIVATE_RESULT') {
+          btn.disabled = false;
+          btn.textContent = 'Activate';
+          if (data.ok) {
+            show(success);
+          } else {
+            msg.textContent = data.error || 'Could not activate that key.';
+            msg.style.color = '#f59e0b';
+          }
+        }
+      });
+
+      function activate() {
+        var key = input.value.trim();
+        if (!key) { msg.textContent = 'Enter a license key.'; msg.style.color = '#f59e0b'; return; }
+        btn.disabled = true;
+        btn.textContent = 'Activating…';
+        msg.textContent = '';
+        window.postMessage({ type: 'BJASSIST_ACTIVATE_LICENSE', key: key }, window.location.origin);
+      }
+
+      btn.addEventListener('click', activate);
+      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') activate(); });
+
+      // Give the content script a moment to announce itself; if it never
+      // does, the extension isn't installed (or isn't enabled) here.
+      setTimeout(function () {
+        if (!extensionReady) show(missing);
+      }, 1200);
+    })();
+  </script>
+</body>
+</html>

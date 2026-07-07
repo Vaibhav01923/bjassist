@@ -33,6 +33,11 @@
       "css": ["src/overlay.css"],
       "run_at": "document_idle",
       "all_frames": true
+    },
+    {
+      "matches": ["https://bjassist.com/*", "https://www.bjassist.com/*"],
+      "js": ["src/license.js", "src/web-bridge.js"],
+      "run_at": "document_idle"
     }
   ]
 }
