@@ -21,7 +21,7 @@ or via `supabase secrets set --project-ref xlstduhdanyfqnbiziym KEY=value`)
 | Secret | Value | Notes |
 |---|---|---|
 | `DODO_API_KEY` | (the Dodo secret API key) | Never put this in client code. |
-| `DODO_WEBHOOK_KEY` | (Dodo webhook signing secret, `whsec_...`) | From the Dodo dashboard's webhook endpoint settings. Not yet set — `dodo-webhook` fails closed (500) until it is. |
+| `DODO_WEBHOOK_KEY` | (Dodo webhook signing secret, `whsec_...`) | From the Dodo dashboard's webhook endpoint settings. Set and confirmed working — signed events are landing in `webhook_events`. |
 | `DODO_API_BASE` | `https://live.dodopayments.com` | Set to `https://test.dodopayments.com` while testing. |
 | `DODO_RETURN_URL` | `https://bjassist.com/thank-you.html` | Where Dodo redirects after checkout. |
 
@@ -36,11 +36,22 @@ or via `supabase secrets set --project-ref xlstduhdanyfqnbiziym KEY=value`)
 RLS is enabled with no policies, so only the service-role key (used inside the
 Edge Functions) can read/write these tables.
 
-## One-time setup still needed in the Dodo dashboard
+## Dodo dashboard setup — status
 
-1. Enable a **License Key** entitlement on the BJAssist product
-   (Product → Advanced Settings → Entitlements & Credits). This is what makes Dodo
-   auto-generate and email a license key on successful payment.
-2. Point the webhook endpoint at `https://xlstduhdanyfqnbiziym.supabase.co/functions/v1/dodo-webhook`
-   (bjassist.com has no server yet to receive it at `/api/webhooks/dodo`).
-3. Copy the webhook signing secret into `DODO_WEBHOOK_KEY` above.
+- ✅ **License Key entitlement** (`ent_0NifEUpUyCUoL9hgjwoDE`, auto fulfillment, 3
+  activations) is attached to the BJAssist product. Any successful payment now
+  auto-generates and emails a license key.
+- ✅ **Webhook endpoint** is `https://bjassist.com/api/webhooks/dodo`, proxied via
+  the `website/vercel.json` rewrite straight through to the `dodo-webhook`
+  function above (no separate server needed at that path).
+- ✅ **`DODO_WEBHOOK_KEY`** is set and verified working.
+- ⚠️ **Product's subscription period was misconfigured** (20 years instead of 1
+  month) at some point after initial setup and has been fixed via API — if the
+  product is ever edited again in the dashboard, double-check
+  `subscription_period_interval`/`subscription_period_count` match
+  `payment_frequency_interval`/`payment_frequency_count` (both should be
+  `Month`/`1`).
+- ⚠️ **Live payments have been failing** with a generic `error_code: "UNKNOWN_ERROR"`
+  on UPI Intent attempts specifically — not something diagnosable from this repo
+  or the API; needs Dodo support looking at the underlying processor/bank logs
+  for the affected `payment_id`s if it keeps happening.
