@@ -120,31 +120,61 @@
   /* ---------- License strip ---------- */
   (function () {
     var text = document.getElementById('licenseStripText');
+    var actions = document.getElementById('licenseActions');
     var btn = document.getElementById('licenseStripBtn');
+    var input = document.getElementById('licenseStripInput');
+    var activateBtn = document.getElementById('licenseStripActivateBtn');
+    var msg = document.getElementById('licenseStripMsg');
     if (!text || !window.BJLicense) return;
 
-    chrome.storage.local.get(['bjLicenseKey', 'bjStatus', 'bjFreeHandUsed'], function (data) {
-      if (data.bjLicenseKey && data.bjStatus === 'active') {
-        text.textContent = '✓ BJAssist unlocked';
-        btn.style.display = 'none';
-      } else if (data.bjFreeHandUsed) {
-        text.textContent = 'Free hand used — on-page hints need a license.';
-        btn.style.display = '';
-      } else {
-        text.textContent = 'On-page hints: 1 free hand, then $14.99/mo.';
-        btn.style.display = '';
-      }
-    });
+    function paint() {
+      chrome.storage.local.get(['bjLicenseKey', 'bjStatus', 'bjFreeHandUsed'], function (data) {
+        if (data.bjLicenseKey && data.bjStatus === 'active') {
+          text.textContent = '✓ BJAssist unlocked';
+          actions.style.display = 'none';
+        } else if (data.bjFreeHandUsed) {
+          text.textContent = 'Free hand used — on-page hints need a license.';
+          actions.style.display = '';
+        } else {
+          text.textContent = 'On-page hints: 1 free hand, then $14.99/mo.';
+          actions.style.display = '';
+        }
+      });
+    }
 
     btn.addEventListener('click', function () {
       btn.disabled = true;
       btn.textContent = 'Opening…';
       window.BJLicense.startCheckout('extension_popup', function (res) {
         btn.disabled = false;
-        btn.textContent = 'Unlock $14.99/mo';
+        btn.textContent = 'Unlock — $14.99/mo';
         if (res.ok) window.open(res.url, '_blank');
-        else text.textContent = res.error || 'Could not start checkout.';
+        else { msg.textContent = res.error || 'Could not start checkout.'; msg.classList.remove('success'); }
       });
     });
+
+    // Already have a key (e.g. from a previous purchase, or the email just
+    // arrived) — activate it right here, no need to hunt through Settings.
+    activateBtn.addEventListener('click', activate);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') activate(); });
+
+    function activate() {
+      activateBtn.disabled = true;
+      msg.textContent = '';
+      window.BJLicense.activate(input.value, function (res) {
+        activateBtn.disabled = false;
+        if (res.ok) {
+          input.value = '';
+          msg.textContent = 'Activated ✓';
+          msg.classList.add('success');
+          paint();
+        } else {
+          msg.textContent = res.error || 'Could not activate that key.';
+          msg.classList.remove('success');
+        }
+      });
+    }
+
+    paint();
   })();
 })();

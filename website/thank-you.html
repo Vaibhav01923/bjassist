@@ -21,17 +21,27 @@
     <div class="badge">Payment received</div>
     <h1 style="font-size:40px;letter-spacing:-0.02em;margin-top:20px">You're in.</h1>
     <p class="lead" style="margin:20px auto 0">
-      Dodo Payments just emailed a license key to the address you checked out with.
-      Paste it into the extension to unlock live on-page suggestions.
+      Dodo Payments just emailed a license key to the address you checked out with —
+      that email is the one reliable place to find it. Two steps to unlock the extension:
     </p>
 
-    <div class="demo-panel" style="text-align:left;margin-top:40px">
-      <h4>Next steps</h4>
+    <div id="keyBox" style="display:none;margin-top:28px;padding:16px 18px;border-radius:12px;background:var(--panel);border:1px solid var(--green);text-align:left">
+      <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim)">Your license key</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+        <code id="keyValue" style="flex:1;font-size:15px;color:var(--text);word-break:break-all"></code>
+        <button type="button" id="copyKeyBtn" class="btn btn-ghost btn-sm" style="flex:none">Copy</button>
+      </div>
+    </div>
+
+    <div class="demo-panel" style="text-align:left;margin-top:32px">
+      <h4>Activate it</h4>
       <ol style="color:var(--muted);font-size:15px;line-height:1.9;padding-left:20px;margin-top:10px">
-        <li>Open the BJAssist extension and click <strong>⚙ All settings</strong>.</li>
-        <li>Find your license key in the confirmation email from Dodo Payments.</li>
-        <li>Paste it into the <strong>License</strong> card and click <strong>Activate</strong>.</li>
+        <li>Click the BJAssist icon in Chrome's toolbar (the puzzle-piece icon 🧩 if it's not pinned yet).</li>
+        <li>In the popup that opens, paste your key into the <strong>"Already paid? Paste your key"</strong> box near the top and click <strong>Activate</strong>.</li>
       </ol>
+      <p style="color:var(--dim);font-size:13px;margin-top:14px">
+        That's it — no separate settings page to find. The extension unlocks the moment the key is accepted.
+      </p>
     </div>
 
     <p class="foot-note" style="margin-top:30px;max-width:none">
@@ -39,6 +49,24 @@
     </p>
     <a href="index.html" class="btn btn-ghost" style="margin-top:20px">Back to BJAssist</a>
   </section>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var key = params.get('license_key');
+      if (!key) return;
+      document.getElementById('keyValue').textContent = key;
+      document.getElementById('keyBox').style.display = '';
+      document.getElementById('copyKeyBtn').addEventListener('click', function () {
+        navigator.clipboard.writeText(key).then(function () {
+          var btn = document.getElementById('copyKeyBtn');
+          var original = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = original; }, 1500);
+        });
+      });
+    })();
+  </script>
 
   <footer class="footer" style="margin-top:60px">
     <div class="copyright">© 2026 BJAssist. For entertainment purposes only.</div>

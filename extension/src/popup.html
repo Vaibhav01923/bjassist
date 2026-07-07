@@ -19,8 +19,18 @@
   </header>
 
   <div class="license-strip" id="licenseStrip">
-    <span id="licenseStripText">Checking license…</span>
-    <button type="button" id="licenseStripBtn" style="display:none">Unlock $14.99/mo</button>
+    <div class="license-row">
+      <span id="licenseStripText">Checking license…</span>
+    </div>
+    <div class="license-actions" id="licenseActions" style="display:none">
+      <button type="button" id="licenseStripBtn">Unlock — $14.99/mo</button>
+      <div class="license-or">Already paid? Paste your key:</div>
+      <div class="license-activate-row">
+        <input type="text" id="licenseStripInput" placeholder="License key" autocomplete="off" spellcheck="false" />
+        <button type="button" id="licenseStripActivateBtn">Activate</button>
+      </div>
+      <div class="license-msg" id="licenseStripMsg"></div>
+    </div>
   </div>
 
   <section class="calc">
