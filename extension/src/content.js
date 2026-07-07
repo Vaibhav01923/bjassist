@@ -233,9 +233,13 @@
     tick();
   }
 
-  // React to settings changes from the popup live.
+  // React to settings changes from the popup live. Settings live in
+  // chrome.storage.sync — license.js writes to chrome.storage.local, and
+  // onChanged fires for every storage area, so this must filter by areaName
+  // or a free-hand write would force a spurious extra render mid-hand.
   try {
-    chrome.storage.onChanged.addListener(function (changes) {
+    chrome.storage.onChanged.addListener(function (changes, areaName) {
+      if (areaName !== 'sync') return;
       if (changes.enabled) state.enabled = changes.enabled.newValue;
       if (changes.rules) state.rules = changes.rules.newValue || {};
       if (changes.position) {
