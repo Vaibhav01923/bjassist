@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Activate your license — BJAssist</title>
   <meta name="description" content="Activate your BJAssist license key directly, no copy-pasting into the extension required." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-
   <header class="nav">
     <a class="logo" href="index.html">
       <span class="logo-mark">B</span> BJAssist
@@ -19,7 +22,7 @@
 
   <section class="section" style="max-width:520px;margin:0 auto;text-align:center;padding-top:64px">
     <div class="badge">License activation</div>
-    <h1 style="font-size:36px;letter-spacing:-0.02em;margin-top:20px">Activate your key.</h1>
+    <h1 class="section-title" style="margin-top:20px">Activate your key.</h1>
     <p class="lead" style="margin:16px auto 0;font-size:16px">
       This unlocks BJAssist directly in your browser — no need to open the extension yourself.
     </p>
@@ -42,9 +45,9 @@
 
       <!-- Activation form -->
       <div id="stateForm" style="display:none">
-        <label for="keyInput" style="display:block;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim)">License key</label>
+        <label for="keyInput" style="display:block;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--dim)">License key</label>
         <input type="text" id="keyInput" placeholder="Paste your license key" autocomplete="off" spellcheck="false"
-          style="width:100%;margin-top:8px;padding:12px 14px;border-radius:10px;border:1px solid rgba(148,163,184,.35);background:var(--bg);color:var(--text);font:inherit;font-size:15px" />
+          style="width:100%;margin-top:8px;padding:12px 14px;border-radius:9px;border:1px solid var(--line-strong);background:var(--bg);color:var(--text);font:inherit;font-size:15px" />
         <button type="button" id="activateBtn" class="btn btn-block" style="margin-top:14px">Activate</button>
         <p id="formMsg" style="margin-top:12px;font-size:14px;text-align:center;min-height:20px"></p>
       </div>
@@ -80,7 +83,11 @@
 
       var params = new URLSearchParams(window.location.search);
       var prefill = params.get('key') || params.get('license_key');
-      if (prefill) input.value = prefill;
+      if (prefill) {
+        input.value = prefill;
+        // Don't leave the license key sitting in the address bar / history.
+        history.replaceState(null, '', window.location.pathname);
+      }
 
       var extensionReady = false;
 
@@ -107,14 +114,14 @@
             show(success);
           } else {
             msg.textContent = data.error || 'Could not activate that key.';
-            msg.style.color = '#f59e0b';
+            msg.style.color = '#d4a13e';
           }
         }
       });
 
       function activate() {
         var key = input.value.trim();
-        if (!key) { msg.textContent = 'Enter a license key.'; msg.style.color = '#f59e0b'; return; }
+        if (!key) { msg.textContent = 'Enter a license key.'; msg.style.color = '#d4a13e'; return; }
         btn.disabled = true;
         btn.textContent = 'Activating…';
         msg.textContent = '';

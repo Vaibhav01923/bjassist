@@ -1,31 +1,61 @@
-/* Hero mini-overlay rotation + checkout. The playable table demo lives in demo-game.js. */
+/* Hero hand rotation + checkout. The playable table demo lives in demo-game.js. */
 (function () {
   'use strict';
 
-  // Rotate a few example hands in the hero card for life.
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Hero: a real dealt hand, re-dealt every few seconds ----------
+     Hero cards are always visible ('dealt'); the one-time entrance animates
+     transform only via keyframes, so nothing ships blank if timers or
+     animations are paused. */
+  function cardHTML(rank, suitIdx, hidden, dealDelay) {
+    var suits = [['♠', '#171310'], ['♥', '#c0362f'], ['♦', '#c0362f'], ['♣', '#171310']];
+    var s = suits[suitIdx % 4];
+    var anim = (typeof dealDelay === 'number' && !REDUCED)
+      ? ' deal-anim" style="animation-delay:' + dealDelay + 'ms' : '';
+    return '<div class="pcard dealt' + (hidden ? ' hidden' : '') + anim + '"><div class="pcard-inner">' +
+      '<div class="pcard-face pcard-front" style="color:' + s[1] + '">' +
+        '<div class="pc-rank">' + rank + '</div>' +
+        '<div class="pc-rank pc-rank-b">' + rank + '</div>' +
+        '<div class="pc-suit">' + s[0] + '</div>' +
+      '</div>' +
+      '<div class="pcard-face pcard-back"><span>BJ</span></div>' +
+    '</div></div>';
+  }
+
   function heroLoop() {
     var samples = [
-      ['16', ['10', '6'], '5'],
-      ['DOUBLE', ['5', '6'], '4'],
-      ['SPLIT', ['8', '8'], '10'],
-      ['HIT', ['A', '7'], '9'],
-      ['STAND', ['A', '8'], '6']
+      [['10', '6'], '5', [0, 2], 3],   // playerRanks, dealerRank, playerSuits, dealerSuit
+      [['5', '6'], '4', [1, 0], 2],
+      [['8', '8'], '10', [3, 1], 0],
+      [['A', '7'], '9', [0, 3], 1],
+      [['A', '8'], '6', [2, 0], 3]
     ];
-    var i = 0;
     var a = document.getElementById('heroAction');
     var d = document.getElementById('heroDetail');
     var dot = document.querySelector('.mo-dot');
-    if (!a) return;
-    setInterval(function () {
-      i = (i + 1) % samples.length;
-      var s = samples[i];
-      var rec = window.BJStrategy.getBestPlay(s[1], s[2]);
+    var pEl = document.getElementById('heroPlayerCards');
+    var dEl = document.getElementById('heroDealerCards');
+    if (!a || !pEl || !dEl || !window.BJStrategy) return;
+
+    var i = 0;
+    function show(idx, animate) {
+      var s = samples[idx];
+      var rec = window.BJStrategy.getBestPlay(s[0], s[1]);
+      dEl.innerHTML = cardHTML(s[1], s[3], false, animate ? 120 : undefined) +
+                      cardHTML('?', 0, true, animate ? 280 : undefined);
+      pEl.innerHTML = s[0].map(function (r, j) {
+        return cardHTML(r, s[2][j], false, animate ? 440 + j * 160 : undefined);
+      }).join('');
       a.textContent = rec.label.toUpperCase();
       a.style.color = rec.color;
       if (dot) { dot.style.background = rec.color; dot.style.boxShadow = '0 0 10px ' + rec.color; }
-      d.textContent = 'You: ' + s[1].join(' ') + ' · Dealer: ' + s[2] +
+      d.textContent = 'You: ' + s[0].join(' ') + ' · Dealer: ' + s[1] +
         ' · (' + (rec.hand.soft ? 'soft ' : 'hard ') + rec.hand.total + ')';
-    }, 2200);
+    }
+
+    show(0, true);
+    setInterval(function () { i = (i + 1) % samples.length; show(i, false); }, 3400);
   }
 
   heroLoop();
@@ -62,26 +92,8 @@
         });
     });
   })();
-})();
 
-/* ---------- Animations & live strategy grid ---------- */
-(function () {
-  'use strict';
-
-  // 1) Scroll-reveal: tag common elements, then observe.
-  var autoReveal = '.step, .feature, .plan, .review, .demo-panel, .demo-result, ' +
-    '#how .section-title, #features .section-title, #pricing .section-title, ' +
-    '#faq .section-title, #demo .section-title, #reviews .section-title, ' +
-    '#demo .section-sub, .faq details, .hero-stats';
-  document.querySelectorAll(autoReveal).forEach(function (el) { el.classList.add('reveal'); });
-
-  // Stagger siblings within each group.
-  document.querySelectorAll('.steps, .features, .plans, .reviews').forEach(function (group) {
-    Array.prototype.forEach.call(group.children, function (child, i) {
-      if (child.classList.contains('reveal')) child.style.transitionDelay = (i * 90) + 'ms';
-    });
-  });
-
+  /* ---------- Scroll reveal (opt-in via .reveal in markup) + nav shrink ---------- */
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
@@ -89,38 +101,8 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 
-  // 2) Sticky-nav shrink.
   var nav = document.querySelector('.nav');
   window.addEventListener('scroll', function () {
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 24);
   }, { passive: true });
-
-  // 3) Count-up on the hero's numeric stat(s).
-  function countUp(el, target, suffix, decimals) {
-    var start = null, dur = 1400;
-    function step(ts) {
-      if (!start) start = ts;
-      var p = Math.min((ts - start) / dur, 1);
-      var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = (target * eased).toFixed(decimals) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-  var statObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.querySelectorAll('strong').forEach(function (s) {
-        var raw = s.textContent.trim();
-        var m = raw.match(/^([0-9]+(?:\.[0-9]+)?)(%?)$/);
-        if (m) {
-          var num = parseFloat(m[1]);
-          if (num > 0) countUp(s, num, m[2], m[1].indexOf('.') > -1 ? 1 : 0);
-        }
-      });
-      statObs.unobserve(e.target);
-    });
-  }, { threshold: 0.5 });
-  var hs = document.querySelector('.hero-stats');
-  if (hs) statObs.observe(hs);
 })();

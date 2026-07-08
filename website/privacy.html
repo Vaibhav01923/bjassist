@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — BJAssist</title>
+  <meta name="description" content="What data the BJAssist Chrome extension and bjassist.com collect, why, and who it is shared with." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
+  <style>
+    .legal { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+    .legal h1 { margin-bottom: 4px; }
+    .legal .legal-updated { color: var(--dim, #8a988e); font-size: 14px; margin-bottom: 32px; }
+    .legal h2 { margin: 32px 0 10px; font-size: 22px; }
+    .legal p, .legal li { line-height: 1.65; margin-bottom: 12px; }
+    .legal ul { padding-left: 22px; margin-bottom: 16px; }
+    .legal table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14.5px; }
+    .legal th, .legal td { text-align: left; padding: 8px 10px; border: 1px solid rgba(138, 152, 142, 0.35); vertical-align: top; }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <a class="logo" href="/">
+      <span class="logo-mark">B</span> BJAssist
+    </a>
+    <nav class="nav-links">
+      <a href="/#how">How it works</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <a href="/#pricing" class="btn btn-sm">Get BJAssist</a>
+  </header>
+
+  <main class="legal">
+    <h1>Privacy Policy</h1>
+    <p class="legal-updated">Last updated: July 8, 2026 · Applies to the BJAssist Chrome extension and bjassist.com</p>
+
+    <h2>The short version</h2>
+    <ul>
+      <li>The cards BJAssist reads off your screen are processed <strong>entirely on your device</strong> and never leave your browser.</li>
+      <li>We run <strong>no analytics, no ads, and no trackers</strong> — not in the extension and not on this site.</li>
+      <li>The only personal data we handle is what a paid subscription requires: your <strong>license key</strong> and, if you provide it at checkout, your <strong>email address</strong>.</li>
+      <li>We never sell your data, and we never use it for anything other than running BJAssist.</li>
+    </ul>
+
+    <h2>What the extension collects and why</h2>
+    <table>
+      <tr><th>Data</th><th>Why</th><th>Where it goes</th></tr>
+      <tr>
+        <td>Cards visible in the game on your screen</td>
+        <td>To compute the mathematically optimal play</td>
+        <td>Nowhere. Read and computed locally in your browser; never transmitted or stored.</td>
+      </tr>
+      <tr>
+        <td>Your settings (overlay position, table rules, on/off)</td>
+        <td>So your preferences persist</td>
+        <td>Chrome's extension storage (synced by Chrome to your own Google profile if you use Chrome sync). Not sent to us.</td>
+      </tr>
+      <tr>
+        <td>License key</td>
+        <td>To activate and verify your paid subscription</td>
+        <td>Stored in local extension storage; sent to Dodo Payments (our payment provider) to activate and validate it.</td>
+      </tr>
+      <tr>
+        <td>Email address (optional, at checkout)</td>
+        <td>To create your checkout session and email you your license key and receipts</td>
+        <td>Dodo Payments, the merchant of record for all BJAssist purchases.</td>
+      </tr>
+      <tr>
+        <td>Free-hand usage flag</td>
+        <td>To provide one free hand of advice before asking you to subscribe</td>
+        <td>Stored locally in extension storage only.</td>
+      </tr>
+    </table>
+    <p>
+      The extension's Bonuses tab fetches a public list of casino bonus links from our database
+      (hosted on Supabase). That request sends no personal data — it is a plain read of public rows.
+    </p>
+
+    <h2>What we do NOT do</h2>
+    <ul>
+      <li>We do not collect your browsing history, the sites you visit, or your gameplay results.</li>
+      <li>We do not record, transmit, or store the contents of any web page.</li>
+      <li>We do not use analytics, advertising, or tracking of any kind.</li>
+      <li>We do not sell, rent, or share personal data with anyone except the service providers below, and only as needed to run BJAssist.</li>
+      <li>The extension is read-only: it never clicks, bets, or plays on your behalf, and never interacts with your casino account.</li>
+    </ul>
+
+    <h2>Service providers</h2>
+    <ul>
+      <li><strong>Dodo Payments</strong> (merchant of record) — processes payments, issues license keys, and handles activation/validation. Your payment card details go directly to Dodo; we never see them. See <a href="https://dodopayments.com/privacy" rel="noopener">Dodo Payments' privacy policy</a>.</li>
+      <li><strong>Supabase</strong> — hosts our backend (checkout session creation, license webhooks, and the public bonus list). See <a href="https://supabase.com/privacy" rel="noopener">Supabase's privacy policy</a>.</li>
+      <li><strong>Vercel</strong> — hosts this website. Standard server logs (IP address, user agent) may be processed to serve and secure the site.</li>
+    </ul>
+
+    <h2>Data retention and deletion</h2>
+    <p>
+      License and purchase records are kept while your subscription is active and as long as required
+      for tax and accounting. Everything stored by the extension itself (settings, license key,
+      free-hand flag) lives in your browser and is removed when you uninstall the extension.
+      To have your subscription data deleted, email us and we will remove what we hold and pass the
+      request to Dodo Payments.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      Depending on where you live (e.g. GDPR in the EU/UK, CCPA in California), you may have the right
+      to access, correct, export, or delete your personal data. Email us and we will honor it.
+    </p>
+
+    <h2>Children</h2>
+    <p>BJAssist is intended for adults of legal gambling age (18/21+ depending on jurisdiction). We do not knowingly collect data from minors.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes materially, we will update this page and the "Last updated" date above.</p>
+
+    <h2>Contact</h2>
+    <p>Questions or requests: <a href="mailto:vaibhavkandpal1221@gmail.com">vaibhavkandpal1221@gmail.com</a></p>
+  </main>
+
+  <footer class="footer">
+    <div class="copyright">© 2026 BJAssist. For entertainment purposes only.</div>
+  </footer>
+
+</body>
+</html>

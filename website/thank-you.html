@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>You're in — BJAssist</title>
   <meta name="description" content="Thanks for subscribing to BJAssist. Check your email for your license key." />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-
   <header class="nav">
     <a class="logo" href="index.html">
       <span class="logo-mark">B</span> BJAssist
@@ -19,7 +22,7 @@
 
   <section class="section" style="max-width:640px;margin:0 auto;text-align:center;padding-top:64px">
     <div class="badge">Payment received</div>
-    <h1 style="font-size:40px;letter-spacing:-0.02em;margin-top:20px">You're in.</h1>
+    <h1 class="section-title" style="margin-top:20px">You're in.</h1>
     <p class="lead" style="margin:20px auto 0">
       Dodo Payments just emailed a license key to the address you checked out with.
       Activate it here — if BJAssist is installed in this browser, it unlocks automatically.
@@ -48,6 +51,8 @@
       var key = params.get('license_key');
       var link = document.getElementById('activateLink');
       link.href = key ? ('activate.html?key=' + encodeURIComponent(key)) : 'activate.html';
+      // Don't leave the license key sitting in the address bar / history.
+      if (key) history.replaceState(null, '', window.location.pathname);
     })();
   </script>
 

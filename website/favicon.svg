@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbf8ef"/>
+      <stop offset="1" stop-color="#f4f1e8"/>
+    </linearGradient>
+  </defs>
+  <!-- card edge (bottom lip) -->
+  <rect x="22" y="10" width="84" height="108" rx="13" fill="#d9d4c4"/>
+  <!-- card face -->
+  <rect x="22" y="10" width="84" height="102" rx="13" fill="url(#face)"/>
+  <!-- serif B -->
+  <text x="64" y="79" text-anchor="middle" font-family="Georgia, 'Palatino Linotype', Palatino, 'Book Antiqua', serif" font-weight="700" font-size="62" fill="#171310">B</text>
+  <!-- red diamond pip, lower right like a card index -->
+  <path d="M93 89.5 L99.84 99 L93 108.5 L86.16 99 Z" fill="#b3352e"/>
+</svg>
