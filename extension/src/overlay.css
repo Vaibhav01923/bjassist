@@ -1,17 +1,23 @@
+/* BJAssist on-page badge — same "card room" family as the popup and options:
+   felt surface, serif verdict, painted-line accents. Everything is namespaced
+   under #bjassist-overlay so host pages can't easily collide with it. */
 #bjassist-overlay.bjassist-overlay {
   position: fixed;
   top: 90px;
   right: 20px;
   z-index: 2147483647;
-  width: 210px;
+  width: 214px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #f8fafc;
-  background: rgba(15, 23, 42, 0.94);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 14px;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+  color: #e9ede8;
+  background:
+    radial-gradient(140% 90% at 50% -20%, rgba(52, 94, 68, 0.4), transparent 65%),
+    rgba(10, 16, 13, 0.96);
+  border: 1px solid rgba(214, 228, 216, 0.28);
+  border-radius: 12px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   backdrop-filter: blur(6px);
+  font-feature-settings: "tnum";
   --aa-color: #22c55e;
 }
 #bjassist-overlay .aa-head {
@@ -20,7 +26,8 @@
   gap: 7px;
   padding: 8px 10px;
   cursor: move;
-  background: rgba(2, 6, 23, 0.55);
+  background: rgba(4, 8, 6, 0.6);
+  border-bottom: 1px solid rgba(214, 228, 216, 0.1);
   user-select: none;
 }
 #bjassist-overlay .aa-dot {
@@ -29,62 +36,118 @@
   box-shadow: 0 0 8px var(--aa-color);
 }
 #bjassist-overlay .aa-title {
-  font-size: 12px; font-weight: 600; letter-spacing: 0.02em; flex: 1;
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; flex: 1;
 }
 #bjassist-overlay .aa-close {
-  background: none; border: none; color: #94a3b8;
+  background: none; border: none; color: #a7b3a9;
   font-size: 16px; line-height: 1; cursor: pointer; padding: 0 2px;
+  font-family: inherit;
 }
-#bjassist-overlay .aa-close:hover { color: #f8fafc; }
+#bjassist-overlay .aa-close:hover { color: #e9ede8; }
 #bjassist-overlay .aa-action {
-  font-size: 30px; font-weight: 800; text-align: center;
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-size: 31px; font-weight: 700; text-align: center;
   padding: 14px 8px 6px; color: var(--aa-color);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
 #bjassist-overlay .aa-detail {
-  font-size: 11px; line-height: 1.4; color: #cbd5e1;
+  font-size: 11px; line-height: 1.45; color: #a7b3a9;
   padding: 0 12px 12px; text-align: center;
 }
-#bjassist-overlay.bjassist-idle .aa-action { color: #64748b; }
+#bjassist-overlay.bjassist-idle .aa-action { color: #8a988e; }
 
-#bjassist-overlay.bjassist-locked { width: 240px; }
+#bjassist-overlay.bjassist-locked { width: 244px; }
 #bjassist-overlay.bjassist-locked .aa-action {
-  font-size: 18px; color: #f59e0b; padding-top: 12px;
+  font-size: 18px; color: #d4a13e; padding-top: 12px; letter-spacing: 0.08em;
 }
 #bjassist-overlay .aa-unlock {
   margin-top: 8px;
   display: inline-block;
-  font: inherit;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight: 700;
   font-size: 11px;
-  color: #0b1220;
-  background: #22c55e;
+  color: #171310;
+  background: linear-gradient(170deg, #fbf8ef, #f4f1e8);
   border: none;
-  border-radius: 8px;
+  border-bottom: 2px solid #d9d4c4;
+  border-radius: 7px;
   padding: 8px 12px;
   cursor: pointer;
-  transition: background 0.15s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s, transform 0.12s;
 }
-#bjassist-overlay .aa-unlock:hover { background: #34d968; }
-#bjassist-overlay .aa-unlock:disabled { opacity: 0.6; cursor: default; }
+#bjassist-overlay .aa-unlock:hover { background: #fffcf3; transform: translateY(-1px); }
+#bjassist-overlay .aa-unlock:active { border-bottom-width: 1px; transform: translateY(0); }
+#bjassist-overlay .aa-unlock:disabled { opacity: 0.6; cursor: default; transform: none; }
 
 /* Split into multiple hands — one clearly labeled row per hand instead of a
    single big action word, so advice is never ambiguous about which hand it's for. */
-#bjassist-overlay.bjassist-multi { width: 250px; }
+#bjassist-overlay.bjassist-multi { width: 254px; }
 #bjassist-overlay .aa-multi { padding: 10px 10px 4px; display: flex; flex-direction: column; gap: 6px; }
 #bjassist-overlay .aa-multi-row {
   display: flex; align-items: center; gap: 8px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 9px; padding: 7px 10px;
+  border: 1px solid rgba(214, 228, 216, 0.13);
+  border-radius: 8px; padding: 7px 10px;
 }
 #bjassist-overlay .aa-multi-row.aa-multi-active {
   border-color: rgba(34, 197, 94, 0.5);
   background: rgba(34, 197, 94, 0.08);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.12) inset;
 }
 #bjassist-overlay .aa-multi-label {
-  font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; color: #94a3b8; flex: none;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: #a7b3a9; flex: none;
 }
-#bjassist-overlay .aa-multi-cards { font-size: 11px; color: #cbd5e1; flex: 1; }
-#bjassist-overlay .aa-multi-action { font-size: 12px; font-weight: 800; flex: none; }
+#bjassist-overlay .aa-multi-cards {
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-size: 12px; font-weight: 700; color: #c6cfc8; flex: 1;
+}
+#bjassist-overlay .aa-multi-action { font-size: 12px; font-weight: 800; flex: none; letter-spacing: 0.03em; }
 #bjassist-overlay.bjassist-multi .aa-detail { padding-top: 4px; }
+
+/* Video poker: up to three hold options — best play first, then a safer
+   and/or riskier line, each with its exact odds. Cards render as mini
+   card-stock chips in the same family as the popup and welcome page. */
+#bjassist-overlay.bjassist-vp { width: 294px; }
+#bjassist-overlay .aa-vp-list { padding: 10px 10px 4px; display: flex; flex-direction: column; gap: 7px; }
+#bjassist-overlay .aa-vp-opt {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(214, 228, 216, 0.13);
+  border-radius: 9px; padding: 9px 11px 10px;
+}
+#bjassist-overlay .aa-vp-best {
+  border-color: rgba(34, 197, 94, 0.55);
+  background: rgba(34, 197, 94, 0.08);
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.1) inset;
+}
+#bjassist-overlay .aa-vp-top {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+}
+#bjassist-overlay .aa-vp-tag {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.12em; flex: none;
+  color: #a7b3a9;
+}
+#bjassist-overlay .aa-vp-best .aa-vp-tag { color: #22c55e; }
+#bjassist-overlay .aa-vp-risky .aa-vp-tag { color: #d4a13e; }
+#bjassist-overlay .aa-vp-stats {
+  font-size: 10.5px; color: #a7b3a9; text-align: right;
+  font-feature-settings: "tnum"; letter-spacing: 0.01em;
+}
+#bjassist-overlay .aa-vp-hold {
+  margin-top: 7px; font-size: 12px; color: #c6cfc8;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+}
+#bjassist-overlay .aa-vp-card {
+  display: inline-block;
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-weight: 700; font-size: 13px; line-height: 1;
+  color: #171310;
+  background: linear-gradient(170deg, #fbf8ef, #f4f1e8);
+  border-bottom: 2px solid #d9d4c4; border-radius: 4px;
+  padding: 4px 5px 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+#bjassist-overlay .aa-vp-card.aa-vp-red { color: #b3352e; }
+#bjassist-overlay.bjassist-vp .aa-detail { padding-top: 5px; }

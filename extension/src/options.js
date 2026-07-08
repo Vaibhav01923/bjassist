@@ -107,7 +107,9 @@
     }
 
     function paint() {
-      chrome.storage.local.get(['bjLicenseKey', 'bjStatus', 'bjFreeHandUsed'], function (data) {
+      var storage;
+      try { storage = chrome.storage.local; } catch (e) { return; }
+      storage.get(['bjLicenseKey', 'bjStatus', 'bjFreeHandUsed'], function (data) {
         if (data.bjLicenseKey && data.bjStatus === 'active') {
           lc.title.textContent = 'BJAssist unlocked';
           lc.detail.textContent = 'Your license is active on this device.';

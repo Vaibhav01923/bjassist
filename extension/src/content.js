@@ -9,6 +9,12 @@
 (function () {
   'use strict';
 
+  // The popup's "Enable on this site" button injects this file on demand
+  // (chrome.scripting). On hosts where the manifest already injected it,
+  // that would start a second observer + interval — bail instead.
+  if (window.__bjassistLoaded) return;
+  window.__bjassistLoaded = true;
+
   var HOST = location.hostname;
   var siteConfig = window.BJSiteConfigs ? window.BJSiteConfigs.forHost(HOST) : null;
 
@@ -18,7 +24,9 @@
     position: 'top-right',
     lastSignature: '',
     overlay: null,
-    roundEntitled: null // cached entitlement decision for the CURRENT round (see evaluateEntitlement)
+    roundEntitled: null, // cached entitlement decision for the CURRENT round (see evaluateEntitlement)
+    vpAdvice: null,      // { key, advice } — solved advice for the current video poker deal
+    vpEntitledKey: null  // deal key the current roundEntitled decision belongs to
   };
 
   // Load settings from extension storage (falls back to defaults).
@@ -171,12 +179,12 @@
   // which advice belongs to which hand.
   function showMultiHand(el, recs, hands, dealerUpcard) {
     el.className = 'bjassist-overlay bjassist-multi';
-    el.style.setProperty('--aa-color', recs[0].color || '#e6edf6');
+    el.style.setProperty('--aa-color', recs[0].color || '#e9ede8');
     var knowActive = hands.some(function (h) { return h.active === true; });
     var rows = hands.map(function (h, i) {
       var rec = recs[i];
       var label = rec.error ? '—' : rec.label.toUpperCase();
-      var color = rec.error ? '#64748b' : rec.color;
+      var color = rec.error ? '#8a988e' : rec.color;
       var activeCls = knowActive && h.active ? ' aa-multi-active' : '';
       return (
         '<div class="aa-multi-row' + activeCls + '">' +
@@ -212,16 +220,146 @@
     });
   }
 
+  /* ---------- Video poker (Jacks or Better) ---------- */
+
+  function readVideoPoker() {
+    if (!window.BJVideoPoker) return null;
+    try { return window.BJVideoPoker.parseStake() || null; } catch (e) { return null; }
+  }
+
+  // Quiet diagnostics (visible with DevTools "Verbose" level) so a user
+  // report of "nothing shows up" can be debugged on the live site.
+  function debug() {
+    try { console.debug.apply(console, ['[BJAssist]'].concat([].slice.call(arguments))); } catch (e) {}
+  }
+
+  // On recognized casino hosts only, announce at default console level that
+  // the script is alive — the first thing to check when the overlay is absent.
+  // (Everywhere else stays silent apart from verbose-level lines.)
+  if (siteConfig && window === window.top) {
+    try {
+      console.info('[BJAssist] active on ' + HOST + ' — watching for blackjack and video poker tables. v' +
+        (chrome.runtime && chrome.runtime.getManifest ? chrome.runtime.getManifest().version : '?'));
+    } catch (e) {}
+  }
+
+  // Same free-hand/license model as blackjack: one entitlement decision per
+  // deal (keyed by the 5 dealt cards), so toggling holds never re-gates.
+  function evaluateVpEntitlement(key, cb) {
+    if (!window.BJLicense) { cb(true); return; }
+    if (state.vpEntitledKey === key && typeof state.roundEntitled === 'boolean') {
+      cb(state.roundEntitled);
+      return;
+    }
+    window.BJLicense.checkEntitlement(function (ent) {
+      state.vpEntitledKey = key;
+      state.roundEntitled = ent.entitled;
+      if (ent.entitled && ent.reason === 'free_hand') window.BJLicense.markFreeHandUsed();
+      cb(ent.entitled);
+    });
+  }
+
+  function renderVideoPoker(vp) {
+    // Decision already made (or hand over) — nothing to advise on.
+    if (!vp.actionable) {
+      if (state.overlay) state.overlay.style.display = 'none';
+      state.roundEntitled = null;
+      state.vpEntitledKey = null;
+      return;
+    }
+    var el = ensureOverlay();
+    el.style.display = '';
+    var key = vp.cards.join(',');
+
+    evaluateVpEntitlement(key, function (entitled) {
+      if (!entitled) { showPaywall(el); return; }
+      if (state.vpAdvice && state.vpAdvice.key === key) {
+        paintVpAdvice(el, state.vpAdvice.advice);
+        return;
+      }
+      el.className = 'bjassist-overlay bjassist-vp bjassist-idle';
+      setBody(el, '<div class="aa-action">…</div><div class="aa-detail">Working out the exact odds…</div>');
+      solveVp(vp.cards, function (advice) {
+        if (!advice) {
+          debug('video poker solve failed for', key);
+          setBody(el, '<div class="aa-action">—</div><div class="aa-detail">Could not compute this deal. It will retry on the next hand.</div>');
+          return;
+        }
+        debug('video poker advice ready:', advice.options.length, 'option(s)');
+        state.vpAdvice = { key: key, advice: advice };
+        // Only paint if this deal is still on screen.
+        if (state.lastSignature.indexOf('vp:' + key) === 0) paintVpAdvice(el, advice);
+      });
+    });
+  }
+
+  // Solve in the background service worker (off this page's main thread);
+  // fall back to solving locally if messaging is unavailable.
+  function solveVp(cards, cb) {
+    var localSolve = function () {
+      try { cb(window.BJVideoPoker.advise(cards)); } catch (e) { cb(null); }
+    };
+    try {
+      chrome.runtime.sendMessage({ type: 'bj-vp-solve', payload: { cards: cards } }, function (res) {
+        if (chrome.runtime.lastError || !res || !res.ok) { localSolve(); return; }
+        cb(res.advice);
+      });
+    } catch (e) { localSolve(); }
+  }
+
+  function pct(p) {
+    var v = p * 100;
+    return (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.toFixed(2)) + '%';
+  }
+
+  var VP_LABELS = { best: 'BEST PLAY', safe: 'SAFER', risky: 'LONG SHOT' };
+
+  function paintVpAdvice(el, advice) {
+    el.className = 'bjassist-overlay bjassist-vp';
+    el.style.setProperty('--aa-color', '#22c55e');
+    var rows = advice.options.map(function (o) {
+      var hold;
+      if (o.mask === 31) hold = 'Hold all five cards';
+      else if (o.mask === 0) hold = 'Discard all five, draw a fresh hand';
+      else hold = 'Hold ' + o.holdCards.map(function (c) {
+        return '<span class="aa-vp-card' + (window.BJVideoPoker.isRed(c) ? ' aa-vp-red' : '') + '">' +
+          window.BJVideoPoker.cardLabel(c) + '</span>';
+      }).join('');
+      var stats = 'wins ' + pct(o.winProb) + ' · avg ' + o.ev.toFixed(2) + 'x';
+      if (o.kind === 'risky') stats += ' · royal/SF ' + pct(o.bigProb);
+      return '<div class="aa-vp-opt aa-vp-' + o.kind + '">' +
+        '<div class="aa-vp-top"><span class="aa-vp-tag">' + VP_LABELS[o.kind] + '</span>' +
+        '<span class="aa-vp-stats">' + stats + '</span></div>' +
+        '<div class="aa-vp-hold">' + hold + '</div></div>';
+    }).join('');
+    setBody(el,
+      '<div class="aa-vp-list">' + rows + '</div>' +
+      '<div class="aa-detail">Jacks or Better · exact odds for this deal · advice only, you tap the cards</div>'
+    );
+  }
+
   function tick() {
     if (!state.enabled) {
       if (state.overlay) state.overlay.style.display = 'none';
       return;
     }
     var parsed = readHand();
-    var sig = signature(parsed);
+    var vp = parsed ? null : readVideoPoker();
+    var sig = parsed ? 'bj:' + signature(parsed)
+      : vp ? 'vp:' + vp.cards.join(',') + '#' + vp.actionable
+      : 'none';
     if (sig === state.lastSignature) return;
     state.lastSignature = sig;
-    render(parsed);
+    if (vp) {
+      debug('video poker hand detected:', vp.cards.map(window.BJVideoPoker.cardLabel).join(' '),
+        vp.actionable ? '(decision open)' : '(no decision pending)');
+      renderVideoPoker(vp);
+    } else {
+      if (sig === 'none' && document.querySelector('.player-hand')) {
+        debug('a .player-hand element exists but no readable 5-card hand yet (mid-deal, face-down, or changed markup)');
+      }
+      render(parsed);
+    }
   }
 
   function start() {
@@ -232,6 +370,14 @@
     setInterval(tick, 1200);
     tick();
   }
+
+  // Lets the popup's "Enable on this site" button detect that the overlay is
+  // already running in this tab before it injects a copy via chrome.scripting.
+  try {
+    chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+      if (msg && msg.type === 'bj-ping') sendResponse({ ok: true });
+    });
+  } catch (e) {}
 
   // React to settings changes from the popup live. Settings live in
   // chrome.storage.sync — license.js writes to chrome.storage.local, and

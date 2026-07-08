@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../icons/icon48.png" type="image/png" />
   <link rel="stylesheet" href="welcome.css" />
   <title>Welcome to BJAssist</title>
 </head>
@@ -10,44 +11,35 @@
   <main class="stage">
     <div class="hero">
       <div class="brand"><span class="brand-mark">B</span> BJAssist</div>
-      <h1>You're all set.</h1>
-      <p class="lead">A read-only blackjack strategy helper. It shows the mathematically optimal play — you make every decision and every click yourself.</p>
+      <h1>Installed. Here's how it works.</h1>
+      <p class="lead">A read-only strategy helper for blackjack and video poker. It shows the mathematically optimal play with exact odds — you make every decision and every click yourself.</p>
     </div>
 
     <div class="steps">
-      <div class="step">
-        <div class="n">1</div>
+      <div class="step step-1">
+        <span class="idx"><b>A</b><i class="pip-black">♠</i></span>
+        <span class="idx idx-flip"><b>A</b><i class="pip-black">♠</i></span>
         <h3>Pin the extension</h3>
         <p>Click the puzzle-piece icon in Chrome's toolbar and pin BJAssist so it's one click away.</p>
       </div>
-      <div class="step">
-        <div class="n">2</div>
+      <div class="step step-2">
+        <span class="idx"><b>2</b><i class="pip-red">♥</i></span>
+        <span class="idx idx-flip"><b>2</b><i class="pip-red">♥</i></span>
         <h3>Open the calculator</h3>
         <p>Click the icon to punch in any hand and instantly see the correct play. Works on any page.</p>
       </div>
-      <div class="step">
-        <div class="n">3</div>
-        <h3>Set your table rules</h3>
-        <p>In Settings, match H17/S17, double-after-split, and surrender to your table for exact advice.</p>
+      <div class="step step-3">
+        <span class="idx"><b>3</b><i class="pip-black">♣</i></span>
+        <span class="idx idx-flip"><b>3</b><i class="pip-black">♣</i></span>
+        <h3>Table rules: already set</h3>
+        <p>Defaults match Stake, Roobet, Acebet, and most online casinos. Only touch Settings if your table plays differently (dealer hits soft 17, no double after split, or surrender offered).</p>
       </div>
-    </div>
-
-    <div class="cta">
-      <button id="openOptions" class="btn">Open settings</button>
-      <span class="note">You can reopen this any time from the extension's Settings.</span>
     </div>
 
     <div class="disclaimer">
       BJAssist uses perfect basic strategy, which lowers the house edge to about 0.5% — it does not
-      guarantee winnings and does not play for you. On-page suggestions may be restricted by some casinos'
-      terms of service; using that feature is your responsibility. For education and entertainment. 21+ where applicable.
+      guarantee winnings and does not play for you. For education and entertainment. 21+ where applicable.
     </div>
   </main>
-
-  <script>
-    document.getElementById('openOptions').addEventListener('click', function () {
-      try { chrome.runtime.openOptionsPage(); } catch (e) {}
-    });
-  </script>
 </body>
 </html>

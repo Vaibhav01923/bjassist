@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../icons/icon48.png" type="image/png" />
   <link rel="stylesheet" href="options.css" />
   <title>BJAssist — Settings</title>
 </head>
@@ -27,7 +28,7 @@
         <div style="flex:1">
           <h3>Have a license key?</h3>
           <p>Paste the key emailed to you after checkout.</p>
-          <input type="text" id="licenseKeyInput" placeholder="BJASSIST-XXXX-XXXX-XXXX" style="width:100%;margin-top:8px;padding:10px 12px;border-radius:8px;border:1px solid rgba(148,163,184,.35);background:rgba(15,23,42,.5);color:inherit;font:inherit" />
+          <input type="text" id="licenseKeyInput" placeholder="Paste your license key" autocomplete="off" spellcheck="false" />
         </div>
       </div>
       <div class="actions">
@@ -41,7 +42,7 @@
       <div class="row">
         <div>
           <h3>On-page suggestions</h3>
-          <p>Show the floating suggestion badge on blackjack tables. Turn off to use only the popup calculator.</p>
+          <p>Show the floating suggestion badge on blackjack and video poker (Jacks or Better) tables. Turn off to use only the popup calculator.</p>
         </div>
         <label class="switch"><input type="checkbox" id="enabled" checked /><span class="slider"></span></label>
       </div>
@@ -49,7 +50,7 @@
 
     <section class="card">
       <h2>Table rules</h2>
-      <p class="card-sub">Match these to the table you're playing so the advice is exact.</p>
+      <p class="card-sub">Defaults match Stake, Roobet, Acebet, and most online casinos — only change these if your table plays differently.</p>
 
       <div class="row">
         <div>

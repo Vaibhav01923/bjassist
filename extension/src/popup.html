@@ -33,6 +33,13 @@
     </div>
   </div>
 
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="calc" type="button">Blackjack</button>
+    <button class="tab" data-tab="vp" type="button">Video Poker</button>
+    <button class="tab" data-tab="bonuses" type="button">Bonuses</button>
+  </nav>
+
+  <div id="panelCalc">
   <section class="calc">
     <h2>Your cards</h2>
     <div class="chips" id="playerChips"></div>
@@ -54,13 +61,38 @@
     <label><input type="checkbox" id="das" checked /> Double after split (DAS)</label>
     <label><input type="checkbox" id="surrender" /> Late surrender offered</label>
   </details>
+  </div>
+
+  <div class="vp" id="panelVp" hidden>
+    <h2>Your five cards</h2>
+    <div class="chips" id="vpChips"></div>
+    <div class="vp-grid" id="vpGrid"></div>
+    <button class="clear" id="vpClear" type="button">Clear</button>
+    <div class="vp-result" id="vpResult"></div>
+    <div class="vp-note">Jacks or Better · Stake paytable (800 / 60 / 22 / 9 / 6 / 4 / 3 / 2 / 1) · exact odds, not rules of thumb.</div>
+  </div>
+
+  <div class="bonuses" id="panelBonuses" hidden>
+    <div class="bonus-filters" id="bonusFilters">
+      <button type="button" data-casino="stake.com" class="active">Stake.com</button>
+      <button type="button" data-casino="stake.us">Stake.us</button>
+    </div>
+    <div class="bonus-list" id="bonusList"></div>
+    <div class="bonus-foot">Latest weekly and monthly bonus links. Availability and eligibility are decided by Stake, not BJAssist.</div>
+  </div>
 
   <footer class="pop-foot">
+    <div class="site-enable" id="siteEnable" hidden>
+      <button type="button" id="enableHereBtn">Enable on this tab</button>
+      <div class="site-enable-msg" id="enableHereMsg">On a Stake mirror or another casino? Turn the on-page overlay on for this tab only.</div>
+    </div>
     <a href="#" id="openSettings" class="settings-link">⚙ All settings</a>
+    <div>Auto-reads blackjack and video poker (Jacks or Better) tables on Stake and shows the optimal play on-page.</div>
     <div>Read-only strategy advice. You make every play. For entertainment/education.</div>
   </footer>
 
   <script src="strategy.js"></script>
+  <script src="video-poker.js"></script>
   <script src="license.js"></script>
   <script src="popup.js"></script>
 </body>

@@ -6,7 +6,13 @@ Supabase project: `bjassist` (ref `xlstduhdanyfqnbiziym`, org `kssdcwxturgxzlfnt
 
 - `create-checkout` — https://xlstduhdanyfqnbiziym.supabase.co/functions/v1/create-checkout
   Creates a Dodo Payments checkout session for product `pdt_0NiXK7A6ZVxXJuIJasQqB` and
-  returns `{ checkout_url }`. Called by the website and the extension. Public (no JWT).
+  returns `{ checkout_url }`. Called by the website and the extension. Public (no JWT),
+  but hardened: CORS is allowlisted to `bjassist.com`/`www.bjassist.com` and
+  `chrome-extension://*` origins (403 otherwise), there's a best-effort per-IP rate
+  limit (5/min, in-memory per isolate), and Dodo error bodies are logged server-side
+  only, never echoed to callers. Because of the CORS allowlist, the extension calls
+  this ONLY via its background service worker (see `extension/background.js`) —
+  content-script fetches would carry the casino page's origin and get 403.
 - `dodo-webhook` — https://xlstduhdanyfqnbiziym.supabase.co/functions/v1/dodo-webhook
   Verifies the Dodo Standard-Webhooks signature and logs events to `webhook_events` /
   `purchases` for our own records. **Not** on the entitlement-checking path — the
@@ -36,11 +42,46 @@ or via `supabase secrets set --project-ref xlstduhdanyfqnbiziym KEY=value`)
 RLS is enabled with no policies, so only the service-role key (used inside the
 Edge Functions) can read/write these tables.
 
+## Bonuses table (see migration `create_bonuses_table`)
+
+`bonuses(source_id unique, casino, cadence, code, title, value_display, requirement,
+link_url, posted_at)` feeds the extension popup's **Bonuses** tab. RLS allows
+anon **SELECT only** — the extension reads it directly via PostgREST with the
+publishable key (`sb_publishable_...`, hardcoded in `extension/src/popup.js`);
+writes need the service role (dashboard / SQL editor / MCP).
+
+Seeded 2026-07-08 with the 10 newest weekly + monthly bonuses for stake.com and
+stake.us from `https://stakecruncher.com/faucet-api/stake-bonuses?casino=all&cadence=all&limit=300`
+(`source_id` = their `id`, so re-imports dedupe via `on conflict do nothing`).
+
+To add a bonus later, run in the SQL editor:
+
+```sql
+insert into public.bonuses (casino, cadence, code, title, value_display, link_url, posted_at)
+values ('stake.com', 'weekly', 'TheCode', 'Title shown in the popup', '$75000',
+        'https://stake.com/?bonus=TheCode', now());
+```
+
+The popup shows each casino's rows grouped by cadence, newest first (limit 60).
+It client-side-filters out rows whose title/code matches
+`giveaway|raffle|winners|challenge` (only official recurring bonuses are shown)
+and dedupes repeated codes. The initial import included some of those noise
+rows; to also clean them out of the table, run:
+
+```sql
+delete from public.bonuses
+where title ~* '(giveaway|raffle|winners|challenge)'
+   or code ~* '(giveaway|raffle|winners|challenge)';
+```
+
 ## Dodo dashboard setup — status
 
-- ✅ **License Key entitlement** (`ent_0NifEUpUyCUoL9hgjwoDE`, auto fulfillment, 3
-  activations) is attached to the BJAssist product. Any successful payment now
-  auto-generates and emails a license key.
+- ✅ **License Key entitlement** (`ent_0NifEUpUyCUoL9hgjwoDE`, auto fulfillment, **1
+  activation per key** — lowered from 3 on 2026-07-08, existing key updated too) is
+  attached to the BJAssist product. Any successful payment auto-generates and emails
+  a license key. Note the support tradeoff: a customer who reinstalls or switches
+  browsers without "Remove license from this device" first will hit the activation
+  cap and need their key's instance freed (Dodo dashboard → license key instances).
 - ✅ **Webhook endpoint** is `https://bjassist.com/api/webhooks/dodo`, proxied via
   the `website/vercel.json` rewrite straight through to the `dodo-webhook`
   function above (no separate server needed at that path).
