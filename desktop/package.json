@@ -1,0 +1,37 @@
+{
+  "name": "bjassist-desktop",
+  "productName": "BJAssist",
+  "version": "1.0.0",
+  "description": "Blackjack & video poker strategy advisor — optimal plays with exact odds. Read-only: it advises, you decide.",
+  "author": "BJAssist <vaibhavkandpal1221@gmail.com>",
+  "homepage": "https://bjassist.com",
+  "license": "UNLICENSED",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.bjassist.desktop",
+    "productName": "BJAssist",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**"
+    ],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "BJAssist"
+    }
+  }
+}
