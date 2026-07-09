@@ -252,46 +252,6 @@ h2:first-child { margin-top: 0; }
 .vp-card.vp-red { color: #b3352e; }
 .vp-note { font-size: 10px; color: var(--dim); margin-top: 10px; line-height: 1.4; }
 
-/* bonuses tab */
-.bonuses { padding: 12px 14px 14px; }
-.bonus-filters { display: flex; gap: 6px; margin-bottom: 12px; }
-.bonus-filters button {
-  flex: 1; background: rgba(6, 10, 8, 0.7); border: 1px solid var(--line-strong); color: var(--muted);
-  border-radius: 7px; padding: 6px 0; font-weight: 600; font-size: 11.5px; cursor: pointer;
-  font-family: var(--sans); transition: background 0.12s, color 0.12s;
-}
-.bonus-filters button:hover { background: var(--raised); color: var(--text); }
-.bonus-filters button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-.bonus-filters button.active {
-  background: linear-gradient(170deg, #fbf8ef, var(--card));
-  color: var(--ink); border-color: var(--card); font-weight: 700;
-}
-.bonus-cad {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.14em;
-  color: var(--dim); margin: 12px 0 7px; font-weight: 700;
-}
-.bonus-cad:first-child { margin-top: 0; }
-.bonus-cad::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-.bonus-row {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--raised); border: 1px solid var(--line); border-radius: 8px;
-  padding: 8px 10px; margin-bottom: 6px;
-  text-decoration: none; color: var(--text);
-  transition: background 0.12s, border-color 0.12s;
-}
-.bonus-row:hover { background: #1e2f24; border-color: var(--line-strong); }
-.bonus-row:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-.bonus-main { flex: 1; min-width: 0; }
-.bonus-title {
-  font-size: 12px; font-weight: 600;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.bonus-meta { font-size: 10.5px; color: var(--dim); margin-top: 2px; }
-.bonus-claim { flex: none; font-size: 11px; font-weight: 700; color: var(--gold); }
-.bonus-note { color: var(--muted); font-size: 12px; padding: 6px 0; }
-.bonus-foot { font-size: 10px; color: var(--dim); margin-top: 8px; line-height: 1.4; }
-
 .pop-foot {
   padding: 10px 14px 11px; font-size: 10px; color: var(--dim);
   border-top: 1px solid var(--line); line-height: 1.4;

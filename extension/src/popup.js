@@ -366,26 +366,14 @@
     paint();
   })();
 
-  /* ---------- Tabs + Bonuses ---------- */
+  /* ---------- Tabs ---------- */
   (function () {
     var tabs = document.getElementById('tabs');
     var panels = {
       calc: document.getElementById('panelCalc'),
-      vp: document.getElementById('panelVp'),
-      bonuses: document.getElementById('panelBonuses')
+      vp: document.getElementById('panelVp')
     };
-    var list = document.getElementById('bonusList');
-    var filters = document.getElementById('bonusFilters');
-    if (!tabs || !panels.calc || !panels.vp || !panels.bonuses || !list || !filters) return;
-
-    // Read-only view of public.bonuses. The publishable key is safe to ship:
-    // RLS only permits SELECT on this table for the anon role.
-    var BONUSES_URL = 'https://xlstduhdanyfqnbiziym.supabase.co/rest/v1/bonuses';
-    var PUBLISHABLE_KEY = 'sb_publishable_HbuZ-j15lZUMZfFIqyzc1Q_tboNob54';
-
-    var casino = 'stake.com';
-    var cache = {};
-    var loadedOnce = false;
+    if (!tabs || !panels.calc || !panels.vp) return;
 
     tabs.addEventListener('click', function (e) {
       var b = e.target.closest('button[data-tab]');
@@ -396,115 +384,6 @@
       Object.keys(panels).forEach(function (k) {
         panels[k].hidden = k !== b.dataset.tab;
       });
-      if (b.dataset.tab === 'bonuses' && !loadedOnce) { loadedOnce = true; load(); }
     });
-
-    filters.addEventListener('click', function (e) {
-      var b = e.target.closest('button[data-casino]');
-      if (!b || b.dataset.casino === casino) return;
-      casino = b.dataset.casino;
-      Array.prototype.forEach.call(filters.children, function (f) {
-        f.classList.toggle('active', f === b);
-      });
-      load();
-    });
-
-    function note(text) {
-      var el = document.createElement('div');
-      el.className = 'bonus-note';
-      el.textContent = text;
-      return el;
-    }
-
-    // Only the official recurring bonuses belong here — the feed (and the
-    // initial import) also carries raffle-winner posts, giveaways, and forum
-    // challenges, which are noise for this tab.
-    var JUNK = /(giveaway|raffle|winners|challenge)/i;
-
-    function load() {
-      if (cache[casino]) { paintBonuses(cache[casino]); return; }
-      list.textContent = '';
-      list.appendChild(note('Loading…'));
-      var wanted = casino;
-      fetch(BONUSES_URL +
-        '?select=cadence,code,title,value_display,link_url,posted_at' +
-        '&casino=eq.' + encodeURIComponent(wanted) +
-        '&order=posted_at.desc&limit=60',
-        { headers: { apikey: PUBLISHABLE_KEY } })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (rows) {
-          if (rows) {
-            var seen = {};
-            rows = rows.filter(function (r) {
-              if (JUNK.test(r.title || '') || JUNK.test(r.code || '')) return false;
-              // The feed sometimes reposts the same code — keep the newest only.
-              var key = r.code || r.link_url || '';
-              if (seen[key]) return false;
-              seen[key] = true;
-              return true;
-            });
-            cache[wanted] = rows;
-          }
-          if (wanted === casino) paintBonuses(rows);
-        })
-        .catch(function () { if (wanted === casino) paintBonuses(null); });
-    }
-
-    // Rows originate from an external feed, so everything is rendered with
-    // textContent (never innerHTML) and links must be https.
-    function paintBonuses(rows) {
-      list.textContent = '';
-      if (!rows) { list.appendChild(note('Could not load bonuses. Check your connection and try again.')); return; }
-      if (!rows.length) { list.appendChild(note('No bonuses recorded for ' + casino + ' yet.')); return; }
-
-      var order = ['weekly', 'monthly'];
-      var byCadence = {};
-      rows.forEach(function (r) {
-        (byCadence[r.cadence] = byCadence[r.cadence] || []).push(r);
-      });
-      Object.keys(byCadence).forEach(function (c) {
-        if (order.indexOf(c) === -1) order.push(c);
-      });
-
-      var CAD_NAMES = { weekly: 'Weekly bonus', monthly: 'Monthly bonus' };
-      order.forEach(function (cadence) {
-        var items = byCadence[cadence];
-        if (!items || !items.length) return;
-        var head = document.createElement('div');
-        head.className = 'bonus-cad';
-        head.textContent = CAD_NAMES[cadence] || cadence;
-        list.appendChild(head);
-        items.forEach(function (r) {
-          var row = document.createElement('a');
-          row.className = 'bonus-row';
-          var url = String(r.link_url || '');
-          if (url.indexOf('https://') === 0) {
-            row.href = url;
-            row.target = '_blank';
-            row.rel = 'noopener noreferrer';
-          }
-          var main = document.createElement('div');
-          main.className = 'bonus-main';
-          var title = document.createElement('div');
-          title.className = 'bonus-title';
-          title.textContent = r.title || 'Bonus';
-          main.appendChild(title);
-          var meta = document.createElement('div');
-          meta.className = 'bonus-meta';
-          var d = new Date(r.posted_at);
-          var parts = [];
-          if (!isNaN(d)) parts.push(d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
-          if (r.value_display) parts.push(r.value_display);
-          meta.textContent = parts.join(' · ');
-          main.appendChild(meta);
-          row.appendChild(main);
-          var claim = document.createElement('span');
-          claim.className = 'bonus-claim';
-          claim.textContent = 'Claim ↗';
-          row.appendChild(claim);
-          list.appendChild(row);
-        });
-      });
-    }
   })();
 })();
