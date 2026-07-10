@@ -266,6 +266,31 @@ h2:first-child { margin-top: 0; }
 .site-enable {
   margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--line-strong);
 }
+/* miniplayer — Spotify-style compact advice bar */
+.head-controls { display: flex; align-items: center; gap: 10px; }
+.mini-btn {
+  background: none; border: 1px solid var(--line-strong); color: var(--muted);
+  border-radius: 6px; width: 24px; height: 24px; cursor: pointer;
+  font-size: 13px; line-height: 1; padding: 0;
+}
+.mini-btn:hover { color: var(--text); border-color: var(--gold); }
+.mini-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; height: 100vh;
+}
+.mini-info { flex: 1; min-width: 0; }
+.mini-action {
+  font-family: var(--serif); font-weight: 700; font-size: 19px;
+  letter-spacing: 0.02em; color: var(--green);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mini-detail {
+  font-size: 10.5px; color: var(--dim); margin-top: 1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+body.mini > *:not(.mini-bar) { display: none; }
+body.mini { min-width: 0; min-height: 0; overflow: hidden; }
+
 /* the launcher strip sits between the license strip and the tabs */
 .live-launch {
   margin-bottom: 0; padding: 10px 14px;

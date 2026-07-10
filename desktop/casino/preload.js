@@ -48,6 +48,39 @@ function installLicenseShim() {
   };
 }
 
+/*
+ * Mirror the in-page overlay's advice to the main process so the panel's
+ * miniplayer can show it. Reads the overlay DOM (rather than hooking
+ * content.js) to keep content.js byte-identical with the extension.
+ */
+function watchOverlay() {
+  let lastSent = '';
+  setInterval(function () {
+    const el = document.getElementById('bjassist-overlay');
+    let payload = null;
+    if (el && el.style.display !== 'none' && !el.className.includes('bjassist-idle')) {
+      const action = el.querySelector('.aa-action');
+      const detail = el.querySelector('.aa-detail');
+      const vpBest = el.querySelector('.aa-vp-opt.aa-vp-best .aa-vp-hold');
+      const multi = el.querySelectorAll('.aa-multi-row');
+      if (vpBest) {
+        payload = { action: vpBest.textContent.trim(), detail: 'Video poker · best play' };
+      } else if (multi.length) {
+        payload = {
+          action: 'SPLIT HANDS',
+          detail: Array.prototype.map.call(multi, function (r) { return r.textContent.trim(); }).join('  ·  ')
+        };
+      } else if (action) {
+        payload = { action: action.textContent.trim(), detail: detail ? detail.textContent.trim() : '' };
+      }
+    }
+    const key = JSON.stringify(payload);
+    if (key === lastSent) return;
+    lastSent = key;
+    ipcRenderer.send('bj:liveAdvice', payload);
+  }, 500);
+}
+
 function boot() {
   try {
     installLicenseShim();
@@ -56,6 +89,7 @@ function boot() {
     (0, eval)(source(path.join('..', 'renderer', 'video-poker.js')));
     (0, eval)(source('site-configs.js'));
     (0, eval)(source('content.js'));
+    if (window === window.top) watchOverlay();
   } catch (e) {
     console.error('[BJAssist] live advice failed to start:', e.message);
   }

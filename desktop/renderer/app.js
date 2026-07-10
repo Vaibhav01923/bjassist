@@ -179,6 +179,7 @@
       el.resultAction.classList.remove('pop');
       void el.resultAction.offsetWidth; // restart the verdict animation
       el.resultAction.classList.add('pop');
+      setMiniAdvice(rec.label.toUpperCase(), 'You: ' + player.join(' ') + ' · Dealer: ' + dealer, rec.color);
       if (!res.licensed) paintStrip();
     });
   }
@@ -212,6 +213,35 @@
     saveSettings();
   });
   el.clearPlayer.addEventListener('click', function () { player = []; renderPlayer(); compute(); });
+
+  /* ---------- miniplayer ---------- */
+
+  var miniBar = document.getElementById('miniBar');
+  var miniAction = document.getElementById('miniAction');
+  var miniDetail = document.getElementById('miniDetail');
+
+  function setMiniAdvice(action, detail, color) {
+    miniAction.textContent = action;
+    miniAction.style.color = color || '';
+    miniDetail.textContent = detail;
+  }
+
+  function setMini(on) {
+    document.body.classList.toggle('mini', on);
+    miniBar.hidden = !on;
+    API.setMini(on);
+    if (!on) API.setAlwaysOnTop(el.alwaysOnTop.checked); // restore the user's preference
+  }
+
+  document.getElementById('miniBtn').addEventListener('click', function () { setMini(true); });
+  document.getElementById('miniExpand').addEventListener('click', function () { setMini(false); });
+
+  if (API.onLiveAdvice) {
+    API.onLiveAdvice(function (p) {
+      if (p) setMiniAdvice(p.action, p.detail, '#22c55e');
+      else setMiniAdvice('—', 'Waiting for a hand…', '');
+    });
+  }
 
   var casinoBtn = document.getElementById('openCasinoBtn');
   var casinoUrl = document.getElementById('casinoUrl');

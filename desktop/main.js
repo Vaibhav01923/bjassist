@@ -247,6 +247,27 @@ app.whenReady().then(() => {
   ipcMain.handle('bj:consume', (_e, sig) => consume(String(sig || '')));
   ipcMain.handle('bj:openCheckout', () => shell.openExternal(CHECKOUT_PAGE));
   ipcMain.handle('bj:openCasino', (_e, url) => { openCasino(url); return true; });
+
+  // Miniplayer: shrink the panel to a compact always-on-top advice bar.
+  // Full-size minimums are restored on expand (the renderer re-applies the
+  // user's "Stay on top" preference itself).
+  ipcMain.handle('bj:setMini', (_e, on) => {
+    if (!win) return false;
+    if (on) {
+      win.setMinimumSize(300, 92);
+      win.setSize(330, 92);
+      win.setAlwaysOnTop(true, 'floating');
+    } else {
+      win.setMinimumSize(384, 480);
+      win.setSize(384, 660);
+    }
+    return !!on;
+  });
+
+  // Advice mirrored out of a casino window's overlay → panel miniplayer.
+  ipcMain.on('bj:liveAdvice', (_e, payload) => {
+    if (win && !win.isDestroyed()) win.webContents.send('bj:liveAdvice', payload);
+  });
   ipcMain.handle('bj:setAlwaysOnTop', (_e, flag) => {
     if (win) win.setAlwaysOnTop(!!flag, 'floating');
     return !!flag;

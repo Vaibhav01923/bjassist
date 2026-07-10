@@ -9,5 +9,7 @@ contextBridge.exposeInMainWorld('bj', {
   consume: (sig) => ipcRenderer.invoke('bj:consume', sig),
   openCheckout: () => ipcRenderer.invoke('bj:openCheckout'),
   openCasino: (url) => ipcRenderer.invoke('bj:openCasino', url),
-  setAlwaysOnTop: (flag) => ipcRenderer.invoke('bj:setAlwaysOnTop', flag)
+  setAlwaysOnTop: (flag) => ipcRenderer.invoke('bj:setAlwaysOnTop', flag),
+  setMini: (flag) => ipcRenderer.invoke('bj:setMini', flag),
+  onLiveAdvice: (cb) => ipcRenderer.on('bj:liveAdvice', (_e, payload) => cb(payload))
 });

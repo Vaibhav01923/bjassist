@@ -12,11 +12,23 @@
       <span class="brand-mark">B</span>
       <span class="brand-name">BJAssist</span>
     </div>
-    <label class="toggle">
-      <input type="checkbox" id="alwaysOnTop" />
-      <span>Stay on top</span>
-    </label>
+    <div class="head-controls">
+      <label class="toggle">
+        <input type="checkbox" id="alwaysOnTop" />
+        <span>Stay on top</span>
+      </label>
+      <button type="button" class="mini-btn" id="miniBtn" title="Miniplayer">⇱</button>
+    </div>
   </header>
+
+  <div class="mini-bar" id="miniBar" hidden>
+    <span class="brand-mark">B</span>
+    <div class="mini-info">
+      <div class="mini-action" id="miniAction">—</div>
+      <div class="mini-detail" id="miniDetail">Waiting for a hand…</div>
+    </div>
+    <button type="button" class="mini-btn" id="miniExpand" title="Expand">⇲</button>
+  </div>
 
   <div class="license-strip" id="licenseStrip">
     <div class="license-row">
