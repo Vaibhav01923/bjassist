@@ -21,7 +21,7 @@ const DODO_BASE = 'https://live.dodopayments.com';
 const CHECKOUT_PAGE = 'https://bjassist.com/#pricing';
 const REVALIDATE_MS = 6 * 60 * 60 * 1000;
 const OFFLINE_GRACE_MS = 3 * 24 * 60 * 60 * 1000;
-const FREE_HANDS = 20;
+const FREE_HANDS = 5;
 
 /* ---------- persisted state ---------- */
 
@@ -41,6 +41,7 @@ function loadState() {
     const raw = JSON.parse(fs.readFileSync(stateFile(), 'utf8'));
     state = Object.assign(state, raw);
     if (typeof state.freeLeft !== 'number' || state.freeLeft < 0) state.freeLeft = 0;
+    if (state.freeLeft > FREE_HANDS) state.freeLeft = FREE_HANDS; // allowance was lowered in an update
   } catch (e) { /* first run */ }
 }
 

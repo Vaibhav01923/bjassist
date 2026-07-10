@@ -3,6 +3,10 @@
    serif display voice borrowed from playing-card indices. All texture is pure
    CSS — no remote assets (MV3 CSP-safe). */
 * { box-sizing: border-box; }
+/* The window scrolls (video poker runs tall) but the bar is pure noise in a
+   384px floating panel — hide it; wheel/trackpad/keys still scroll. */
+html { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
 :root {
   --felt: #0e1813;
   --felt-deep: #0a100c;

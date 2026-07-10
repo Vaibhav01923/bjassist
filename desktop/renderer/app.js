@@ -14,7 +14,7 @@
   // during development) — everything works, nothing is licensed.
   var API = window.bj || (function () {
     console.warn('[BJAssist] preload API missing — running with in-memory license state');
-    var freeLeft = 20, lastSig = '';
+    var freeLeft = 5, lastSig = '';
     return {
       getState: function () { return Promise.resolve({ licensed: false, freeLeft: freeLeft, hasKey: false }); },
       activate: function () { return Promise.resolve({ ok: false, error: 'Licensing unavailable in this build.' }); },
