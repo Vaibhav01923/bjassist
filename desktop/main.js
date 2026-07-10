@@ -145,9 +145,50 @@ async function consume(sig) {
   return { allowed: true, licensed: false, freeLeft: state.freeLeft };
 }
 
-/* ---------- window ---------- */
+/* ---------- windows ---------- */
 
 let win = null;
+
+// A real-Chrome user agent (no "Electron/…" token) so casino sites and their
+// bot walls treat the built-in window like an ordinary browser.
+const CHROME_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+  'Chrome/' + process.versions.chrome + ' Safari/537.36';
+
+const OVERLAY_CSS = () => fs.readFileSync(path.join(__dirname, 'casino', 'overlay.css'), 'utf8');
+
+/*
+ * The "Play with live advice" window: an ordinary browser window (persistent
+ * session, so logins survive restarts) whose preload runs the extension's
+ * parser + overlay against the live page DOM.
+ */
+function openCasino(rawUrl) {
+  let url = String(rawUrl || '').trim() || 'https://stake.com';
+  if (!/^(https?|file):\/\//i.test(url)) url = 'https://' + url;
+  const cwin = new BrowserWindow({
+    width: 1280,
+    height: 850,
+    autoHideMenuBar: true,
+    title: 'BJAssist — live advice',
+    backgroundColor: '#0e1813',
+    webPreferences: {
+      preload: path.join(__dirname, 'casino', 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,
+      partition: 'persist:casino'
+    }
+  });
+  cwin.webContents.setUserAgent(CHROME_UA);
+  cwin.webContents.on('did-finish-load', () => {
+    cwin.webContents.insertCSS(OVERLAY_CSS()).catch(() => {});
+  });
+  cwin.webContents.setWindowOpenHandler(({ url: u }) => {
+    if (u.startsWith('https://')) shell.openExternal(u);
+    return { action: 'deny' };
+  });
+  cwin.loadURL(url);
+  return cwin;
+}
 
 function createWindow() {
   win = new BrowserWindow({
@@ -205,10 +246,35 @@ app.whenReady().then(() => {
   ipcMain.handle('bj:deactivate', () => deactivate());
   ipcMain.handle('bj:consume', (_e, sig) => consume(String(sig || '')));
   ipcMain.handle('bj:openCheckout', () => shell.openExternal(CHECKOUT_PAGE));
+  ipcMain.handle('bj:openCasino', (_e, url) => { openCasino(url); return true; });
   ipcMain.handle('bj:setAlwaysOnTop', (_e, flag) => {
     if (win) win.setAlwaysOnTop(!!flag, 'floating');
     return !!flag;
   });
+
+  // CI/dev smoke test for the live-advice stack: BJ_SMOKE_CASINO=<url> opens
+  // the casino window on a page with Stake's DOM (e.g. the test-vp.html
+  // fixture), waits for the injected parser to render the overlay into the
+  // page DOM, then exits 0/1.
+  if (process.env.BJ_SMOKE_CASINO) {
+    const cwin = openCasino(process.env.BJ_SMOKE_CASINO);
+    cwin.webContents.on('did-finish-load', () => {
+      setTimeout(async () => {
+        try {
+          const overlay = await cwin.webContents.executeJavaScript(`(function () {
+            var el = document.getElementById('bjassist-overlay');
+            return el ? { found: true, text: el.textContent.slice(0, 160) } : { found: false };
+          })()`);
+          console.log('[smoke-casino] overlay:', JSON.stringify(overlay));
+          app.exit(overlay.found ? 0 : 1);
+        } catch (e) {
+          console.error('[smoke-casino] failed:', e.message);
+          app.exit(1);
+        }
+      }, 4000); // > one 1.2s detection tick + the ~100ms VP solve
+    });
+    return;
+  }
 
   createWindow();
 

@@ -26,6 +26,7 @@
         return Promise.resolve({ allowed: true, licensed: false, freeLeft: freeLeft });
       },
       openCheckout: function () { window.open('https://bjassist.com/#pricing'); return Promise.resolve(); },
+      openCasino: function (url) { window.open(/^https?:/.test(url) ? url : 'https://' + url); return Promise.resolve(); },
       setAlwaysOnTop: function () { return Promise.resolve(false); }
     };
   })();
@@ -211,6 +212,13 @@
     saveSettings();
   });
   el.clearPlayer.addEventListener('click', function () { player = []; renderPlayer(); compute(); });
+
+  var casinoBtn = document.getElementById('openCasinoBtn');
+  var casinoUrl = document.getElementById('casinoUrl');
+  if (casinoBtn && casinoUrl) {
+    casinoBtn.addEventListener('click', function () { API.openCasino(casinoUrl.value); });
+    casinoUrl.addEventListener('keydown', function (e) { if (e.key === 'Enter') API.openCasino(casinoUrl.value); });
+  }
 
   buildPickers();
   renderPlayer();

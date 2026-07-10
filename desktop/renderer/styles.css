@@ -266,6 +266,13 @@ h2:first-child { margin-top: 0; }
 .site-enable {
   margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--line-strong);
 }
+/* the launcher strip sits between the license strip and the tabs */
+.live-launch {
+  margin-bottom: 0; padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(34, 197, 94, 0.05);
+}
+.live-launch .license-activate-row { margin-top: 6px; }
 .site-enable button {
   width: 100%; background: linear-gradient(170deg, #fbf8ef, var(--card)); color: var(--ink);
   border: none; border-bottom: 2px solid var(--card-edge); border-radius: 7px;

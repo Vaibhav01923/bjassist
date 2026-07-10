@@ -1,7 +1,7 @@
 {
   "name": "bjassist-desktop",
   "productName": "BJAssist",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Blackjack & video poker strategy advisor — optimal plays with exact odds. Read-only: it advises, you decide.",
   "author": "BJAssist <vaibhavkandpal1221@gmail.com>",
   "homepage": "https://bjassist.com",
@@ -21,7 +21,8 @@
     "files": [
       "main.js",
       "preload.js",
-      "renderer/**"
+      "renderer/**",
+      "casino/**"
     ],
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
