@@ -12,6 +12,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=3" />
+  <script>
+    // Phone visitors can't install a desktop extension — send them to the
+    // install page, which shows the email-me-the-link gate on phones.
+    // "Back to BJAssist" on that page sets bj-stay so they can still browse here.
+    (function () {
+      var phone = /Android|iPhone|iPod|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (/Macintosh/i.test(navigator.userAgent) && 'ontouchend' in document) ||
+        (navigator.maxTouchPoints > 1 && Math.min(screen.width, screen.height) < 900);
+      if (phone && !sessionStorage.getItem('bj-stay')) {
+        location.replace('install.html');
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -24,16 +37,14 @@
       <a href="#how">How it works</a>
       <a href="#demo">Live demo</a>
       <a href="#honest">What it does</a>
-      <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a href="#pricing" class="btn btn-sm">Get BJAssist</a>
+    <a href="install.html" class="btn btn-sm">Get BJAssist</a>
   </header>
 
   <!-- HERO -->
   <section class="hero" id="top">
     <div class="hero-inner">
-      <div class="hero-note">Read-only strategy assistant · You always decide</div>
       <h1>Every hand,<br />played <span class="h1-move">by the book.</span></h1>
       <p class="lead">
         Stop squinting at a strategy card mid-hand. BJAssist reads the cards on
@@ -41,7 +52,7 @@
         double, split, or surrender. <strong>It only suggests. Every click stays yours.</strong>
       </p>
       <div class="hero-cta">
-        <a href="#pricing" class="btn">Get the Chrome extension</a>
+        <a href="install.html" class="btn">Get the Chrome extension</a>
         <a href="#demo" class="btn btn-ghost">Try the live demo</a>
       </div>
       <p class="hero-honest">
@@ -84,7 +95,7 @@
         <div class="step-num">1</div>
         <div>
           <h3>Install the extension</h3>
-          <p>Add BJAssist to Chrome. Nothing to configure — it runs locally in your browser.</p>
+          <p>Download BJAssist straight from us and load it into Chrome — <a href="install.html" style="color:var(--gold)">the install guide</a> walks you through every click in about two minutes.</p>
         </div>
       </div>
       <div class="step">
@@ -226,40 +237,6 @@
     </div>
   </section>
 
-  <!-- PRICING -->
-  <section class="section pricing" id="pricing">
-    <h2 class="section-title">Simple pricing</h2>
-    <p class="section-sub">Your first hand is free. Cancel anytime after that.</p>
-    <div class="plans">
-      <div class="plan">
-        <h3>Trainer</h3>
-        <div class="price">$0<span>/forever</span></div>
-        <p class="plan-sub">The manual calculator, for practice.</p>
-        <ul>
-          <li>Manual hand calculator</li>
-          <li>Full basic-strategy engine</li>
-          <li>Rule toggles</li>
-          <li class="muted">No on-page suggestions</li>
-        </ul>
-        <a href="#how" class="btn btn-ghost btn-block">Install free</a>
-      </div>
-      <div class="plan featured">
-        <div class="plan-tag">First hand free</div>
-        <h3>BJAssist</h3>
-        <div class="price">$14.99<span>/mo</span></div>
-        <p class="plan-sub">Live on-page suggestions while you play.</p>
-        <ul>
-          <li>Everything in Trainer</li>
-          <li>Live on-page suggestion badge</li>
-          <li>Auto hand detection</li>
-          <li>1 free hand, then $14.99/mo</li>
-        </ul>
-        <button type="button" class="btn btn-block" id="buyBtn">Get BJAssist</button>
-        <p class="plan-note" id="buyNote"></p>
-      </div>
-    </div>
-  </section>
-
   <!-- FAQ -->
   <section class="section" id="faq">
     <h2 class="section-title">Straight answers</h2>
@@ -274,7 +251,7 @@
       </details>
       <details>
         <summary>Is using a strategy helper allowed?</summary>
-        <p>Basic-strategy advice is legal, but many casinos' Terms of Service restrict third-party software and on-screen assistants. Whether you use the on-page suggestion feature on a given site is your responsibility — check that site's terms. The free Trainer/manual calculator sidesteps this entirely since it never reads any casino page.</p>
+        <p>Basic-strategy advice is legal, but many casinos' Terms of Service restrict third-party software and on-screen assistants. Whether you use the on-page suggestion feature on a given site is your responsibility — check that site's terms. The free manual calculator sidesteps this entirely since it never reads any casino page.</p>
       </details>
       <details>
         <summary>Does card counting work here?</summary>
@@ -290,7 +267,7 @@
   <!-- CTA -->
   <section class="cta">
     <h2>Play every hand the way the math says.</h2>
-    <a href="#pricing" class="btn btn-lg">Get BJAssist for Chrome</a>
+    <a href="install.html" class="btn btn-lg">Get BJAssist for Chrome</a>
   </section>
 
   <!-- FOOTER -->
@@ -304,7 +281,6 @@
         <h5>Product</h5>
         <a href="#how">How it works</a>
         <a href="#demo">Live demo</a>
-        <a href="#pricing">Pricing</a>
       </div>
       <div>
         <h5>Legal</h5>

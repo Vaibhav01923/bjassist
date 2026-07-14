@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Install BJAssist — 2-minute setup</title>
+  <meta name="description" content="Install the BJAssist Chrome extension directly — download, unzip, load unpacked. Step-by-step instructions with pictures of every click." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
+  <style>
+    /* page-local: the numbered walkthrough + the mobile email gate */
+    .inst-wrap { max-width: 680px; margin: 0 auto; padding-top: 48px; }
+    .inst-step {
+      display: flex; gap: 18px; align-items: flex-start; text-align: left;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 14px; padding: 20px 22px; margin-top: 14px;
+    }
+    .inst-num {
+      flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--card); color: var(--ink); font-weight: 700;
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .inst-step h3 { margin: 4px 0 6px; font-size: 18px; color: var(--text); }
+    .inst-step p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+    .inst-step p + p { margin-top: 8px; }
+    .inst-code {
+      display: inline-block; background: var(--panel-2); border: 1px solid var(--line-strong);
+      border-radius: 6px; padding: 2px 9px; font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 14px; color: var(--gold); white-space: nowrap; user-select: all;
+    }
+    .inst-note { margin-top: 10px; font-size: 13px; color: var(--dim); }
+    .inst-dl { margin: 6px 0 2px; }
+    /* mobile gate */
+    .gate {
+      background: var(--panel); border: 1px solid var(--line-strong);
+      border-radius: 16px; padding: 28px 24px; margin-top: 28px; text-align: center;
+    }
+    .gate h2 { font-size: 24px; margin: 0 0 8px; color: var(--text); }
+    .gate p { color: var(--muted); font-size: 15px; line-height: 1.65; margin: 0 0 18px; }
+    .gate-row { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
+    .gate-row input {
+      flex: 1; min-width: 0; background: var(--panel-2); border: 1px solid var(--line-strong);
+      border-radius: 9px; padding: 12px 14px; color: var(--text); font-size: 15px;
+      font-family: inherit;
+    }
+    .gate-row input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .gate-row .btn { padding: 12px 20px; }
+    .gate-msg { margin-top: 12px; font-size: 14px; color: var(--muted); min-height: 20px; }
+    .gate-msg.ok { color: var(--green-2); }
+    .gate-msg.error { color: var(--red); }
+    .gate-alt { margin-top: 14px; font-size: 13px; color: var(--dim); }
+    .gate-alt a { color: var(--gold); }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">B</span> BJAssist
+    </a>
+  </header>
+
+  <section class="section inst-wrap" style="text-align:center">
+    <h1 class="section-title">Install BJAssist in Chrome</h1>
+    <p class="lead" style="margin:16px auto 0">
+      BJAssist installs straight from us — download, unzip, and load it into Chrome
+      yourself. Takes about two minutes, and every click is listed below.
+      Works the same in Edge and Brave.
+    </p>
+
+    <!-- ============ PHONE VISITORS ============ -->
+    <div class="gate" id="mobileGate" hidden>
+      <h2>You're on your phone 📱</h2>
+      <p style="color:var(--gold);font-weight:600;margin-bottom:10px">
+        BJAssist shows you the best blackjack play, every single hand.
+      </p>
+      <p>
+        It's a <strong>desktop Chrome</strong> extension — it can't install on a phone.
+        Drop your email below and we'll send this page to your inbox, so you can open
+        it on your computer.
+      </p>
+      <form class="gate-row" id="gateForm">
+        <input type="email" id="gateEmail" placeholder="you@email.com" autocomplete="email" required />
+        <button type="submit" class="btn" id="gateSend">Email me the link</button>
+      </form>
+      <div class="gate-msg" id="gateMsg"></div>
+      <div class="gate-alt">
+        Prefer doing it yourself? <a href="#" id="gateMailto">Email yourself this link</a>
+        · <a href="#" id="gateCopy">Copy the link</a>
+        · <a href="#" id="gateShowSteps">Show the desktop steps anyway</a>
+      </div>
+    </div>
+
+    <!-- ============ DESKTOP WALKTHROUGH ============ -->
+    <div id="installSteps" style="text-align:left">
+
+      <div class="inst-step">
+        <div class="inst-num">1</div>
+        <div>
+          <h3>Download the extension</h3>
+          <p class="inst-dl">
+            <a class="btn" href="bjassist-extension.zip" download>⬇ Download BJAssist (.zip, ~120 KB)</a>
+          </p>
+          <p class="inst-note">Chrome may ask you to confirm the download — click <b>Keep</b>.</p>
+        </div>
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-num">2</div>
+        <div>
+          <h3>Unzip it somewhere permanent</h3>
+          <p>
+            <b>Windows:</b> right-click the downloaded file → <b>Extract&nbsp;All…</b><br />
+            <b>Mac:</b> double-click the file.
+          </p>
+          <p>
+            You'll get a folder called <span class="inst-code">bjassist-extension</span>.
+            Move it somewhere it can stay — e.g. your <b>Documents</b> folder. Chrome loads the
+            extension <em>from this folder</em>, so if you delete it later, the extension stops working.
+          </p>
+        </div>
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-num">3</div>
+        <div>
+          <h3>Open Chrome's extensions page &amp; turn on Developer mode</h3>
+          <p>
+            Type <span class="inst-code">chrome://extensions</span> into Chrome's address bar and press Enter.
+            (Edge: <span class="inst-code">edge://extensions</span> · Brave: <span class="inst-code">brave://extensions</span>)
+          </p>
+          <p>
+            Flip the <b>Developer mode</b> switch in the <b>top-right corner</b> of that page.
+            Three new buttons appear.
+          </p>
+        </div>
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-num">4</div>
+        <div>
+          <h3>Click "Load unpacked" and pick the folder</h3>
+          <p>
+            Click the <b>Load unpacked</b> button (top-left), then select the
+            <span class="inst-code">bjassist-extension</span> folder you unzipped in step 2
+            and click <b>Select Folder</b>.
+          </p>
+          <p>BJAssist appears in your extension list immediately — that's it installed.</p>
+        </div>
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-num">5</div>
+        <div>
+          <h3>Pin it and play</h3>
+          <p>
+            Click the puzzle-piece icon 🧩 to the right of Chrome's address bar and hit the
+            📌 pin next to <b>BJAssist</b>, so the <b>B</b> button is always visible.
+          </p>
+          <p>
+            Now open your casino and sit at a blackjack or video poker table — the advice badge
+            appears over the game automatically as you're dealt in. Your first hands are free.
+          </p>
+        </div>
+      </div>
+
+      <div class="demo-panel" style="text-align:left;margin-top:28px">
+        <h4>Good to know</h4>
+        <ul style="color:var(--muted);font-size:14px;line-height:1.9;padding-left:20px;margin:10px 0 0">
+          <li><b>"Developer mode" is just Chrome's name</b> for loading extensions from a folder instead of the Web Store. Chrome may show a small reminder about it when it starts — that's normal, click × to dismiss.</li>
+          <li><b>Updating:</b> when we ship a new version, download the new zip, replace the folder's contents, then click the ↻ refresh arrow on the BJAssist card in <span class="inst-code">chrome://extensions</span>.</li>
+          <li><b>Already paid?</b> Click the B icon and paste your license key in the popup — or use the <a href="activate.html" style="color:var(--gold)">activation page</a>.</li>
+          <li><b>Stuck?</b> Reply to any of our emails and a human will walk you through it.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <a href="index.html" class="btn btn-ghost" style="margin-top:32px">Back to BJAssist</a>
+  </section>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var PAGE_URL = 'https://bjassist.com/install';
+      var SEND_URL = 'https://xlstduhdanyfqnbiziym.supabase.co/functions/v1/send-install-link';
+
+      /* Phone? Swap the walkthrough for the email gate. Any portrait viewport
+         counts as a phone (UA sniffing missed some devices); a desktop user in
+         a narrow window can always click "Show the desktop steps anyway". */
+      var gate = document.getElementById('mobileGate');
+      var steps = document.getElementById('installSteps');
+      var userWantsSteps = false;
+
+      function isPhoneView() {
+        // iOS "Request Desktop Website" reports a Mac UA — a touchscreen Mac is
+        // really an iPhone/iPad, so catch that too.
+        return /Android|iPhone|iPod|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+          (/Macintosh/i.test(navigator.userAgent) && 'ontouchend' in document) ||
+          window.innerHeight > window.innerWidth ||
+          (navigator.maxTouchPoints > 1 && Math.min(screen.width, screen.height) < 900);
+      }
+
+      function applyView() {
+        var phone = isPhoneView();
+        gate.hidden = !phone;
+        steps.hidden = phone && !userWantsSteps;
+      }
+
+      applyView();
+      window.addEventListener('resize', applyView);
+      window.addEventListener('orientationchange', applyView);
+
+      /* Phone visitors get redirected here from the homepage; let any link
+         back to it opt out of that redirect for the rest of the session. */
+      document.querySelectorAll('a[href^="index.html"]').forEach(function (a) {
+        a.addEventListener('click', function () {
+          try { sessionStorage.setItem('bj-stay', '1'); } catch (e) {}
+        });
+      });
+
+      document.getElementById('gateShowSteps').addEventListener('click', function (e) {
+        e.preventDefault();
+        userWantsSteps = true;
+        steps.hidden = false;
+        steps.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      /* Self-service fallbacks — no backend involved. */
+      document.getElementById('gateMailto').setAttribute('href',
+        'mailto:?subject=' + encodeURIComponent('Install BJAssist on your computer') +
+        '&body=' + encodeURIComponent('Open this on your computer to install BJAssist:\n\n' + PAGE_URL));
+
+      document.getElementById('gateCopy').addEventListener('click', function (e) {
+        e.preventDefault();
+        var msg = document.getElementById('gateMsg');
+        (navigator.clipboard ? navigator.clipboard.writeText(PAGE_URL) : Promise.reject())
+          .then(function () { msg.textContent = 'Link copied — paste it anywhere.'; msg.className = 'gate-msg ok'; })
+          .catch(function () { msg.textContent = PAGE_URL; msg.className = 'gate-msg'; });
+      });
+
+      /* The email form: our backend sends the install link to their inbox. */
+      document.getElementById('gateForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = document.getElementById('gateSend');
+        var msg = document.getElementById('gateMsg');
+        var email = document.getElementById('gateEmail').value.trim();
+        if (!email) return;
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        msg.textContent = '';
+        msg.className = 'gate-msg';
+        fetch(SEND_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+          .then(function (res) {
+            if (!res.ok || !res.data || res.data.ok !== true) throw new Error('send_failed');
+            btn.textContent = 'Sent ✓';
+            msg.textContent = 'Check your inbox — open that email on your computer.';
+            msg.className = 'gate-msg ok';
+          })
+          .catch(function () {
+            btn.disabled = false;
+            btn.textContent = 'Email me the link';
+            msg.innerHTML = 'Could not send right now — use <b>"Email yourself this link"</b> below instead.';
+            msg.className = 'gate-msg error';
+          });
+      });
+    })();
+  </script>
+
+  <footer class="footer" style="margin-top:60px">
+    <div class="copyright">© 2026 BJAssist. For entertainment purposes only.</div>
+  </footer>
+</body>
+</html>
